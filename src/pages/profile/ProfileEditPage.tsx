@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function ProfileEditPage() {
   return (
@@ -6,5 +6,5 @@ export function ProfileEditPage() {
       title="Редактирование профиля"
       description="Здесь будет форма редактирования данных пользователя."
     />
-  );
+  )
 }

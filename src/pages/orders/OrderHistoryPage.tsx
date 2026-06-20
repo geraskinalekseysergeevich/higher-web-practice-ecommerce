@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function OrderHistoryPage() {
   return (
@@ -6,5 +6,5 @@ export function OrderHistoryPage() {
       title="История заказов"
       description="Здесь будет список заказов с раскрытием состава каждого заказа."
     />
-  );
+  )
 }

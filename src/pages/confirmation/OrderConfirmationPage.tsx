@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function OrderConfirmationPage() {
   return (
@@ -6,5 +6,5 @@ export function OrderConfirmationPage() {
       title="Подтверждение заказа"
       description="Здесь будет номер заказа, состав и итоговая сумма."
     />
-  );
+  )
 }

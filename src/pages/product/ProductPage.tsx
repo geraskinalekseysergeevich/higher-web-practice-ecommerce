@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function ProductPage() {
   return (
@@ -6,5 +6,5 @@ export function ProductPage() {
       title="Страница товара"
       description="Здесь будет карточка товара, галерея, характеристики и кнопка добавления в корзину."
     />
-  );
+  )
 }

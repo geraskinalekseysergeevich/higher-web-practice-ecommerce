@@ -1,6 +1,7 @@
-import clsx from 'clsx';
-import { Link, Outlet } from 'react-router-dom';
-import styles from './MainLayout.module.css';
+import clsx from 'clsx'
+import { Link, Outlet } from 'react-router-dom'
+
+import styles from './MainLayout.module.css'
 
 export function MainLayout() {
   return (
@@ -32,7 +33,10 @@ export function MainLayout() {
       </header>
 
       <div className={clsx(styles.body, styles.card)}>
-        <aside className={clsx(styles.sidebar, styles.card)} aria-label="Разделы приложения">
+        <aside
+          className={clsx(styles.sidebar, styles.card)}
+          aria-label="Разделы приложения"
+        >
           <p className={styles.sidebarTitle}>Разделы</p>
           <div className={styles.links}>
             <Link to="/" className={styles.link}>
@@ -52,5 +56,5 @@ export function MainLayout() {
         </main>
       </div>
     </div>
-  );
+  )
 }

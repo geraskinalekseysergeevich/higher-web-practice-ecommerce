@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function CheckoutPage() {
   return (
@@ -6,5 +6,5 @@ export function CheckoutPage() {
       title="Оформление заказа"
       description="Здесь будет выбор доставки, оплаты и подтверждение заказа."
     />
-  );
+  )
 }

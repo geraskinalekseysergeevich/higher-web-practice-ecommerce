@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function HomePage() {
   return (
@@ -6,5 +6,5 @@ export function HomePage() {
       title="Главная"
       description="Здесь будет список товаров, сортировка, пагинация и поиск."
     />
-  );
+  )
 }

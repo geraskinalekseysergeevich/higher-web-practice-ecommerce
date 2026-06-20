@@ -1,20 +1,21 @@
 import {
   createBrowserRouter,
-  RouterProvider,
   type RouteObject,
-} from 'react-router-dom';
-import { MainLayout } from '../components/layout';
-import { HomePage } from '../pages/home/HomePage';
-import { ProductPage } from '../pages/product/ProductPage';
-import { LoginPage } from '../pages/auth/LoginPage';
-import { RegisterPage } from '../pages/auth/RegisterPage';
-import { ProfilePage } from '../pages/profile/ProfilePage';
-import { ProfileEditPage } from '../pages/profile/ProfileEditPage';
-import { OrderHistoryPage } from '../pages/orders/OrderHistoryPage';
-import { CartPage } from '../pages/cart/CartPage';
-import { CheckoutPage } from '../pages/checkout/CheckoutPage';
-import { OrderConfirmationPage } from '../pages/confirmation/OrderConfirmationPage';
-import { NotFoundPage } from '../pages/NotFoundPage';
+  RouterProvider,
+} from 'react-router-dom'
+
+import { MainLayout } from '../components/layout'
+import { LoginPage } from '../pages/auth/LoginPage'
+import { RegisterPage } from '../pages/auth/RegisterPage'
+import { CartPage } from '../pages/cart/CartPage'
+import { CheckoutPage } from '../pages/checkout/CheckoutPage'
+import { OrderConfirmationPage } from '../pages/confirmation/OrderConfirmationPage'
+import { HomePage } from '../pages/home/HomePage'
+import { NotFoundPage } from '../pages/NotFoundPage'
+import { OrderHistoryPage } from '../pages/orders/OrderHistoryPage'
+import { ProductPage } from '../pages/product/ProductPage'
+import { ProfileEditPage } from '../pages/profile/ProfileEditPage'
+import { ProfilePage } from '../pages/profile/ProfilePage'
 
 const routes: RouteObject[] = [
   {
@@ -34,10 +35,10 @@ const routes: RouteObject[] = [
       { path: '*', element: <NotFoundPage /> },
     ],
   },
-];
+]
 
-const router = createBrowserRouter(routes);
+const router = createBrowserRouter(routes)
 
 export function AppRouter() {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />
 }

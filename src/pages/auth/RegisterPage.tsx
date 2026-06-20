@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function RegisterPage() {
   return (
@@ -6,5 +6,5 @@ export function RegisterPage() {
       title="Регистрация"
       description="Здесь будет форма регистрации и проверка обязательных полей."
     />
-  );
+  )
 }

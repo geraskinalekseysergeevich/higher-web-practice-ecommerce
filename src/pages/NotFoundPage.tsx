@@ -1,4 +1,4 @@
-import { StubPage } from './_StubPage';
+import { StubPage } from './_StubPage'
 
 export function NotFoundPage() {
   return (
@@ -6,5 +6,5 @@ export function NotFoundPage() {
       title="Страница не найдена"
       description="Проверь адрес или вернись на главную страницу."
     />
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function CartPage() {
   return (
@@ -6,5 +6,5 @@ export function CartPage() {
       title="Корзина"
       description="Здесь будут товары, количество, удаление и итоговая сумма."
     />
-  );
+  )
 }

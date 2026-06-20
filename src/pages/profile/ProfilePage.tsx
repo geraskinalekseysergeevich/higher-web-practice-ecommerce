@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function ProfilePage() {
   return (
@@ -6,5 +6,5 @@ export function ProfilePage() {
       title="Профиль"
       description="Здесь будет информация о пользователе и быстрые переходы к редактированию."
     />
-  );
+  )
 }

@@ -1,9 +1,9 @@
-import styles from './_StubPage.module.css';
+import styles from './_StubPage.module.css'
 
 type StubPageProps = {
-  title?: string;
-  description?: string;
-};
+  title?: string
+  description?: string
+}
 
 export function StubPage({
   title = 'Страница',
@@ -17,5 +17,5 @@ export function StubPage({
       </h1>
       <p className={styles.text}>{description}</p>
     </section>
-  );
+  )
 }

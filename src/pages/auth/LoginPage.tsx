@@ -1,4 +1,4 @@
-import { StubPage } from '../_StubPage';
+import { StubPage } from '../_StubPage'
 
 export function LoginPage() {
   return (
@@ -6,5 +6,5 @@ export function LoginPage() {
       title="Вход"
       description="Здесь будет форма входа и валидация полей."
     />
-  );
+  )
 }
