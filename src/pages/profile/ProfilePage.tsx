@@ -1,10 +1,13 @@
-import { StubPage } from '../_StubPage'
+import { Card, SectionHeading } from '../../components/ui'
 
 export function ProfilePage() {
   return (
-    <StubPage
-      title="Профиль"
-      description="Здесь будет информация о пользователе и быстрые переходы к редактированию."
-    />
+    <Card>
+      <SectionHeading
+        description="Заглушка с минимальной структурой для будущих данных пользователя."
+        eyebrow="Личный кабинет"
+        title="Профиль"
+      />
+    </Card>
   )
 }
