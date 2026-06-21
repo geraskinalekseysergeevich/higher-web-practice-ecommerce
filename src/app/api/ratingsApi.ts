@@ -11,7 +11,9 @@ const getRatingTags = (ratings?: ProductRating[]): ApiTag[] => {
   }
 
   return [
-    ...ratings.map((rating) => createItemTag(apiResources.ratings, rating.productId)),
+    ...ratings.map((rating) =>
+      createItemTag(apiResources.ratings, rating.productId)
+    ),
     createListTag(apiResources.ratings),
   ]
 }
@@ -28,7 +30,9 @@ const getRatingsByProductIdEndpoint = (builder: ApiBuilder) =>
       url: RATINGS_URL,
       params: { productId },
     }),
-    providesTags: (_result, _error, productId) => [createItemTag(apiResources.ratings, productId)],
+    providesTags: (_result, _error, productId) => [
+      createItemTag(apiResources.ratings, productId),
+    ],
   })
 
 const createRatingEndpoint = (builder: ApiBuilder) =>
@@ -41,7 +45,9 @@ const createRatingEndpoint = (builder: ApiBuilder) =>
         createdAt: createdAt ?? new Date().toISOString(),
       },
     }),
-    invalidatesTags: (_result, _error, body) => [createItemTag(apiResources.ratings, body.productId)],
+    invalidatesTags: (_result, _error, body) => [
+      createItemTag(apiResources.ratings, body.productId),
+    ],
   })
 
 const ratingsApi = emptySplitApi.injectEndpoints({
