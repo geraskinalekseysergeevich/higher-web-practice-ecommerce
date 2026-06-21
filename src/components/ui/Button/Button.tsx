@@ -26,7 +26,7 @@ const sizeClassNames: Record<ButtonSize, string> = {
   lg: styles.lg,
 }
 
-export function Button({
+export const Button = ({
   children,
   className,
   disabled,
@@ -35,7 +35,7 @@ export function Button({
   type = 'button',
   variant = 'primary',
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <button
       className={clsx(

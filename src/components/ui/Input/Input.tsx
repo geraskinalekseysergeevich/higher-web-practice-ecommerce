@@ -10,10 +10,8 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   requiredMark?: boolean
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { className, error, id, label, requiredMark = false, ...props },
-  ref
-) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, error, id, label, requiredMark = false, ...props }, ref) => {
   const generatedId = useId()
   const inputId = id ?? generatedId
   const errorId = error ? `${inputId}-error` : undefined
@@ -43,4 +41,5 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       ) : null}
     </label>
   )
-})
+}
+)

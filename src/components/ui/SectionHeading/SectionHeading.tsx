@@ -9,12 +9,12 @@ export type SectionHeadingProps = {
   className?: string
 }
 
-export function SectionHeading({
+export const SectionHeading = ({
   className,
   description,
   eyebrow,
   title,
-}: SectionHeadingProps) {
+}: SectionHeadingProps) => {
   return (
     <header className={clsx(styles.root, className)}>
       {eyebrow ? <div className={styles.eyebrow}>{eyebrow}</div> : null}

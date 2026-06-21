@@ -7,6 +7,6 @@ export type CardProps = PropsWithChildren<{
   className?: string
 }>
 
-export function Card({ children, className }: CardProps) {
-  return <div className={clsx(styles.root, className)}>{children}</div>
-}
+export const Card = ({ children, className }: CardProps) => (
+  <div className={clsx(styles.root, className)}>{children}</div>
+)

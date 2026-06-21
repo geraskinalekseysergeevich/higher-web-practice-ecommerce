@@ -4,20 +4,22 @@ import type { FormHTMLAttributes, PropsWithChildren, ReactNode } from 'react'
 import { Card } from '../Card/Card'
 import styles from './Form.module.css'
 
-export type FormProps = PropsWithChildren<FormHTMLAttributes<HTMLFormElement>> & {
+export type FormProps = PropsWithChildren<
+  FormHTMLAttributes<HTMLFormElement>
+> & {
   title: string
   description?: string
   footer?: ReactNode
 }
 
-export function Form({
+export const Form = ({
   children,
   className,
   description,
   footer,
   title,
   ...props
-}: FormProps) {
+}: FormProps) => {
   return (
     <Card className={clsx(styles.root, className)}>
       <header className={styles.header}>

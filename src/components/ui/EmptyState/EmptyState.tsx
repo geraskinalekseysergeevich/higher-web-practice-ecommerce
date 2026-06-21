@@ -12,14 +12,14 @@ export type EmptyStateProps = PropsWithChildren<{
   className?: string
 }>
 
-export function EmptyState({
+export const EmptyState = ({
   actionLabel,
   children,
   className,
   description,
   onAction,
   title,
-}: EmptyStateProps) {
+}: EmptyStateProps) => {
   return (
     <section className={clsx(styles.root, className)}>
       <div className={styles.label}>Пусто</div>

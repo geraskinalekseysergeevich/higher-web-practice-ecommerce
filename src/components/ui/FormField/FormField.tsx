@@ -10,13 +10,13 @@ export type FormFieldProps = PropsWithChildren<{
   className?: string
 }>
 
-export function FormField({
+export const FormField = ({
   children,
   className,
   error,
   label,
   requiredMark = false,
-}: FormFieldProps) {
+}: FormFieldProps) => {
   return (
     <label className={clsx(styles.root, className)}>
       <span className={styles.label}>
