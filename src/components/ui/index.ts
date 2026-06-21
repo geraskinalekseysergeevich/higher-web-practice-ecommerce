@@ -10,6 +10,13 @@ export type { FormProps } from './Form/Form'
 export { Form } from './Form/Form'
 export type { FormFieldProps } from './FormField/FormField'
 export { FormField } from './FormField/FormField'
+export {
+  ArrowIcon,
+  CartIcon,
+  DropdownIcon,
+  SearchIcon,
+  UserIcon,
+} from './Icons/Icons'
 export type { InputProps } from './Input/Input'
 export { Input } from './Input/Input'
 export type { SectionHeadingProps } from './SectionHeading/SectionHeading'
