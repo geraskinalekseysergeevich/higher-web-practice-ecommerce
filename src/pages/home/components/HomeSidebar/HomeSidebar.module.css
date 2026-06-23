@@ -1,0 +1,52 @@
+.root {
+  padding: var(--space-5);
+  gap: var(--space-5);
+}
+
+.group {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.groupTitle {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+}
+
+.categories {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.checklist {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.radios {
+  display: grid;
+  gap: var(--space-1-5);
+}
+
+.switches {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.priceRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.priceField {
+  min-width: 0;
+}
+
+.clearButton {
+  width: 100%;
+  min-height: 2.5rem;
+}

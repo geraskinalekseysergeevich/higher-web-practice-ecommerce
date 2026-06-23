@@ -46,6 +46,12 @@ const getProductsEndpoint = (builder: ApiBuilder) =>
     providesTags: (result) => getProductTags(result),
   })
 
+const getAllProductsEndpoint = (builder: ApiBuilder) =>
+  builder.query<Product[], void>({
+    query: () => PRODUCTS_URL,
+    providesTags: (result) => getProductTags(result),
+  })
+
 const getProductByIdEndpoint = (builder: ApiBuilder) =>
   builder.query<Product, string>({
     query: (productId) => `${PRODUCTS_URL}/${productId}`,
@@ -57,9 +63,14 @@ const getProductByIdEndpoint = (builder: ApiBuilder) =>
 const productsApi = emptySplitApi.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: getProductsEndpoint(builder),
+    getAllProducts: getAllProductsEndpoint(builder),
     getProductById: getProductByIdEndpoint(builder),
   }),
   overrideExisting: false,
 })
 
-export const { useGetProductsQuery, useGetProductByIdQuery } = productsApi
+export const {
+  useGetProductsQuery,
+  useGetAllProductsQuery,
+  useGetProductByIdQuery,
+} = productsApi
