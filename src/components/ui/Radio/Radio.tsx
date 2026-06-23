@@ -2,37 +2,36 @@ import clsx from 'clsx'
 import type { InputHTMLAttributes } from 'react'
 import { forwardRef, useId } from 'react'
 
-import styles from './Checkbox.module.css'
+import styles from './Radio.module.css'
 
-export type CheckboxProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  'type'
-> & {
+export type RadioProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   label: string
   error?: string
   requiredMark?: boolean
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
+export const Radio = forwardRef<HTMLInputElement, RadioProps>(
   ({ className, error, id, label, requiredMark = false, ...props }, ref) => {
     const generatedId = useId()
-    const checkboxId = id ?? generatedId
-    const errorId = error ? `${checkboxId}-error` : undefined
+    const radioId = id ?? generatedId
+    const errorId = error ? `${radioId}-error` : undefined
 
     return (
-      <div className={styles.root}>
-        <label className={styles.field} htmlFor={checkboxId}>
+      <div className={clsx(styles.root, className)}>
+        <label className={styles.field} htmlFor={radioId}>
           <span className={styles.control}>
             <input
               ref={ref}
               aria-describedby={errorId}
               aria-invalid={Boolean(error)}
-              className={clsx(styles.input, className)}
-              id={checkboxId}
-              type="checkbox"
+              className={styles.input}
+              id={radioId}
+              type="radio"
               {...props}
             />
-            <span className={styles.box} aria-hidden="true" />
+            <span className={styles.circle} aria-hidden="true">
+              <span className={styles.dot} />
+            </span>
           </span>
 
           <span className={styles.label}>

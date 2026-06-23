@@ -4,7 +4,7 @@
   justify-content: center;
   gap: var(--space-2);
   border: 1px solid transparent;
-  border-radius: var(--radius-lg);
+  border-radius: 0.25rem;
   font: inherit;
   font-weight: var(--font-weight-bold);
   text-decoration: none;
@@ -45,14 +45,13 @@
 }
 
 .secondary {
-  background: var(--color-surface-secondary);
-  border-color: var(--color-border-default);
-  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
 }
 
 .secondary:hover:not(:disabled) {
-  border-color: var(--color-border-strong);
-  background: var(--color-bg-primary);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .ghost {
@@ -65,7 +64,7 @@
 }
 
 .sm {
-  min-height: 2.25rem;
+  min-height: 2rem;
   padding: var(--space-1-5) var(--space-3);
   font-size: var(--font-size-sm);
 }
@@ -84,4 +83,9 @@
 
 .fullWidth {
   width: 100%;
+}
+
+.iconOnly {
+  min-width: 2rem;
+  padding-inline: 0;
 }

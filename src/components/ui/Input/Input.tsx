@@ -12,34 +12,34 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, id, label, requiredMark = false, ...props }, ref) => {
-  const generatedId = useId()
-  const inputId = id ?? generatedId
-  const errorId = error ? `${inputId}-error` : undefined
+    const generatedId = useId()
+    const inputId = id ?? generatedId
+    const errorId = error ? `${inputId}-error` : undefined
 
-  return (
-    <label className={styles.root} htmlFor={inputId}>
-      {label ? (
-        <span className={styles.label}>
-          {label}
-          {requiredMark ? <span className={styles.required}>*</span> : null}
-        </span>
-      ) : null}
+    return (
+      <label className={styles.root} htmlFor={inputId}>
+        {label ? (
+          <span className={styles.label}>
+            {label}
+            {requiredMark ? <span className={styles.required}>*</span> : null}
+          </span>
+        ) : null}
 
-      <input
-        ref={ref}
-        aria-describedby={errorId}
-        aria-invalid={Boolean(error)}
-        className={clsx(styles.control, error && styles.invalid, className)}
-        id={inputId}
-        {...props}
-      />
+        <input
+          ref={ref}
+          aria-describedby={errorId}
+          aria-invalid={Boolean(error)}
+          className={clsx(styles.control, error && styles.invalid, className)}
+          id={inputId}
+          {...props}
+        />
 
-      {error ? (
-        <span className={styles.error} id={errorId} role="alert">
-          {error}
-        </span>
-      ) : null}
-    </label>
-  )
-}
+        {error ? (
+          <span className={styles.error} id={errorId} role="alert">
+            {error}
+          </span>
+        ) : null}
+      </label>
+    )
+  }
 )

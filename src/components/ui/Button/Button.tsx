@@ -12,6 +12,7 @@ export type ButtonProps = PropsWithChildren<
   variant?: ButtonVariant
   size?: ButtonSize
   fullWidth?: boolean
+  iconOnly?: boolean
 }
 
 const variantClassNames: Record<ButtonVariant, string> = {
@@ -31,6 +32,7 @@ export const Button = ({
   className,
   disabled,
   fullWidth = false,
+  iconOnly = false,
   size = 'md',
   type = 'button',
   variant = 'primary',
@@ -43,6 +45,7 @@ export const Button = ({
         variantClassNames[variant],
         sizeClassNames[size],
         fullWidth && styles.fullWidth,
+        iconOnly && styles.iconOnly,
         className
       )}
       disabled={disabled}
