@@ -1,0 +1,38 @@
+.root {
+  padding: var(--space-5);
+  gap: var(--space-4);
+  align-self: start;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.totals {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.term,
+.value {
+  margin: 0;
+}
+
+.term {
+  color: var(--color-text-secondary);
+}
+
+.value {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}

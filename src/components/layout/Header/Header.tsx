@@ -20,9 +20,9 @@ export const Header = ({ isAuthenticated = false }: HeaderProps) => (
         />
       </Link>
 
-      <button className={styles.catalogButton} type="button">
+      <Link className={styles.catalogButton} to="/">
         Каталог
-      </button>
+      </Link>
 
       <Search className={styles.search} />
 

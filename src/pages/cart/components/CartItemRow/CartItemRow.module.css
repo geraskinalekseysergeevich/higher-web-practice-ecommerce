@@ -1,0 +1,88 @@
+.root {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.image {
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: contain;
+}
+
+.info {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.name {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+.price {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+}
+
+.removeButton {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-link);
+  font: inherit;
+  cursor: pointer;
+}
+
+.quantity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.quantityButton {
+  width: 2rem;
+  min-height: 2rem;
+  padding: 0;
+}
+
+.quantityValue {
+  min-width: 1.5rem;
+  text-align: center;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.total {
+  min-width: 6rem;
+  justify-self: end;
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 48rem) {
+  .root {
+    grid-template-columns: 4rem minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .quantity,
+  .total {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .total {
+    margin-top: var(--space-2);
+  }
+}
