@@ -4,7 +4,7 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 
-import { MainLayout } from '../components/layout'
+import { AuthLayout, MainLayout } from '../components/layout'
 import { LoginPage } from '../pages/auth/LoginPage'
 import { RegisterPage } from '../pages/auth/RegisterPage'
 import { CartPage } from '../pages/cart/CartPage'
@@ -24,8 +24,6 @@ const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: 'product/:productId', element: <ProductPage /> },
-      { path: 'login', element: <LoginPage /> },
-      { path: 'register', element: <RegisterPage /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'profile/edit', element: <ProfileEditPage /> },
       { path: 'orders', element: <OrderHistoryPage /> },
@@ -33,6 +31,13 @@ const routes: RouteObject[] = [
       { path: 'checkout', element: <CheckoutPage /> },
       { path: 'confirmation/:orderId', element: <OrderConfirmationPage /> },
       { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
     ],
   },
 ]

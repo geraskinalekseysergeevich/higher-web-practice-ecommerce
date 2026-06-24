@@ -7,17 +7,20 @@
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-1);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  color: var(--color-text-secondary);
 }
 
 .required {
+  font-size: 0.875em;
+  line-height: 1;
   color: var(--color-accent-danger);
 }
 
 .error {
   font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
+  line-height: 1.2;
   color: var(--color-accent-danger);
 }

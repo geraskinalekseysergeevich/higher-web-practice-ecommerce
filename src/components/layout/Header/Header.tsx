@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import LogoFullSvg from '../../../assets/Logo-Full.svg?react'
 import { CartIcon, UserIcon } from '../../ui'
 import { Search } from '../Search/Search'
 import styles from './Header.module.css'
@@ -12,15 +13,7 @@ export const Header = ({ isAuthenticated = false }: HeaderProps) => (
   <header className={styles.root}>
     <div className={styles.inner}>
       <Link className={styles.brand} to="/" aria-label="На главную">
-        <img
-          className={styles.brandLogo}
-          src="/favicon.svg"
-          alt=""
-          aria-hidden="true"
-          width="40"
-          height="40"
-        />
-        <span className={styles.brandText}>Quant</span>
+        <LogoFullSvg aria-hidden="true" focusable="false" className={styles.brandLogo} />
       </Link>
 
       <button className={styles.catalogButton} type="button">
@@ -35,8 +28,9 @@ export const Header = ({ isAuthenticated = false }: HeaderProps) => (
           <span className={styles.profileName}>Имя профиля</span>
         </Link>
         {isAuthenticated ? (
-          <Link className={styles.cartButton} to="/cart" aria-label="Корзина">
+          <Link className={styles.cart} to="/cart">
             <CartIcon className={styles.cartIcon} />
+            <span className={styles.cartName}>Корзина</span>
           </Link>
         ) : (
           <Link className={styles.registerButton} to="/register">

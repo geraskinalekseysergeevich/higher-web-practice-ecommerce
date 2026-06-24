@@ -1,0 +1,31 @@
+.card {
+  width: min(100%, 26rem);
+}
+
+.footer {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  line-height: 1.2;
+  text-align: left;
+}
+
+.footerText {
+  display: block;
+}
+
+.footerLink {
+  color: var(--color-accent-primary);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+.footerLink:focus-visible {
+  box-shadow: var(--focus-ring);
+}

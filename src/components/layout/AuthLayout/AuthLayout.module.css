@@ -1,0 +1,47 @@
+.root {
+  min-height: 100vh;
+  background: var(--color-bg-primary);
+}
+
+.main {
+  min-height: calc(100vh - 5rem);
+  overflow: hidden;
+}
+
+.illustration {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transform: translateX(8%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.outlet {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-height: inherit;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+@media (max-width: 64rem) {
+  .main {
+    min-height: calc(100vh - 5rem);
+  }
+
+  .illustration {
+    object-position: center 28%;
+  }
+}
+
+@media (max-width: 40rem) {
+  .outlet {
+    padding: 1rem;
+  }
+
+  .illustration {
+    object-position: center 30%;
+  }
+}
