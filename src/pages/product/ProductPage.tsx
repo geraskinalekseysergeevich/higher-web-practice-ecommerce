@@ -5,11 +5,12 @@ import { useParams } from 'react-router-dom'
 import { useGetProductByIdQuery } from '../../app/api/productsApi'
 import { useGetRatingsByProductIdQuery } from '../../app/api/ratingsApi'
 import {
-  ArrowIcon,
   Button,
   Card,
   CartIcon,
+  DropdownIcon,
   EmptyState,
+  StarFilledIcon,
   StarIcon,
 } from '../../components/ui'
 import { getProductCharacteristicEntries } from '../../entities/product/lib/getProductCharacteristicEntries'
@@ -64,12 +65,37 @@ export const ProductPage = () => {
   const currentImage =
     (activeImage && images.includes(activeImage) ? activeImage : images[0]) ??
     ''
+  const currentImageIndex = images.indexOf(currentImage)
+  const hasImages = images.length > 0
   const breadcrumb = formatBreadcrumb(
     product.characteristics['категория'],
     product.characteristics['подкатегория']
   )
   const characteristics = getProductCharacteristicEntries(product)
   const reviewItems = getProductReviewItems(ratings)
+  const handlePreviousImage = () => {
+    if (!hasImages) {
+      return
+    }
+
+    const previousIndex =
+      currentImageIndex > 0 ? currentImageIndex - 1 : images.length - 1
+
+    setActiveImage(images[previousIndex])
+  }
+
+  const handleNextImage = () => {
+    if (!hasImages) {
+      return
+    }
+
+    const nextIndex =
+      currentImageIndex >= 0 && currentImageIndex < images.length - 1
+        ? currentImageIndex + 1
+        : 0
+
+    setActiveImage(images[nextIndex])
+  }
 
   return (
     <section className={styles.page} aria-labelledby="product-title">
@@ -90,8 +116,11 @@ export const ProductPage = () => {
               className={styles.thumbNav}
               type="button"
               aria-label="Предыдущее изображение"
+              onClick={handlePreviousImage}
             >
-              <ArrowIcon className={styles.thumbNavIcon} />
+              <DropdownIcon
+                className={clsx(styles.thumbNavIcon, styles.thumbNavIconLeft)}
+              />
             </button>
 
             <div className={styles.thumbnails} aria-label="Галерея товара">
@@ -115,8 +144,14 @@ export const ProductPage = () => {
               className={styles.thumbNav}
               type="button"
               aria-label="Следующее изображение"
+              onClick={handleNextImage}
             >
-              <ArrowIcon className={styles.thumbNavIcon} flipped />
+              <DropdownIcon
+                className={clsx(
+                  styles.thumbNavIcon,
+                  styles.thumbNavIconRight
+                )}
+              />
             </button>
           </div>
         </div>
@@ -129,7 +164,7 @@ export const ProductPage = () => {
 
             <div className={styles.ratingSummary}>
               <div className={styles.ratingTopRow}>
-                <StarIcon className={styles.ratingStar} />
+                <StarFilledIcon className={styles.ratingStar} />
                 <span className={styles.ratingValue}>
                   {product.rating.toFixed(1)}
                 </span>
@@ -202,13 +237,17 @@ export const ProductPage = () => {
               <article key={review.id} className={styles.reviewRow}>
                 <div className={styles.reviewStars}>
                   {review.stars.map((filled, index) => (
-                    <StarIcon
-                      key={`${review.id}-star-${index}`}
-                      className={clsx(
-                        styles.reviewStarFilled,
-                        !filled && styles.reviewStarMuted
-                      )}
-                    />
+                    filled ? (
+                      <StarFilledIcon
+                        key={`${review.id}-star-${index}`}
+                        className={styles.reviewStarFilled}
+                      />
+                    ) : (
+                      <StarIcon
+                        key={`${review.id}-star-${index}`}
+                        className={styles.reviewStarMuted}
+                      />
+                    )
                   ))}
                 </div>
 

@@ -5,14 +5,10 @@ import styles from './MainLayout.module.css'
 
 export const MainLayout = () => {
   const { pathname } = useLocation()
-  const isAuthenticated = [
-    '/product',
-    '/profile',
-    '/orders',
-    '/cart',
-    '/checkout',
-    '/confirmation',
-  ].some((path) => pathname.startsWith(path))
+  const isAuthenticated =
+    pathname !== '/' &&
+    pathname !== '/login' &&
+    pathname !== '/register'
 
   return (
     <div className={styles.root}>

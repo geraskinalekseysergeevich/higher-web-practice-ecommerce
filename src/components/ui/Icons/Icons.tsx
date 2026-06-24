@@ -47,3 +47,11 @@ export const DropdownIcon = ({ className }: IconProps) => (
 export const StarIcon = ({ className }: IconProps) => (
   <StarIconSvg aria-hidden="true" focusable="false" className={className} />
 )
+
+export const StarFilledIcon = ({ className }: IconProps) => (
+  <StarIconSvg
+    aria-hidden="true"
+    focusable="false"
+    className={clsx(className, styles.filled)}
+  />
+)

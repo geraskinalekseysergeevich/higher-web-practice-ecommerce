@@ -15,6 +15,7 @@ export {
   CartIcon,
   DropdownIcon,
   SearchIcon,
+  StarFilledIcon,
   StarIcon,
   UserIcon,
 } from './Icons/Icons'
