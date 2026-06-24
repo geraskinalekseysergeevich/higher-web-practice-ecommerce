@@ -13,7 +13,11 @@ export const Header = ({ isAuthenticated = false }: HeaderProps) => (
   <header className={styles.root}>
     <div className={styles.inner}>
       <Link className={styles.brand} to="/" aria-label="На главную">
-        <LogoFullSvg aria-hidden="true" focusable="false" className={styles.brandLogo} />
+        <LogoFullSvg
+          aria-hidden="true"
+          focusable="false"
+          className={styles.brandLogo}
+        />
       </Link>
 
       <button className={styles.catalogButton} type="button">

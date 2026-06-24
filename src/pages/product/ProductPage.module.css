@@ -1,0 +1,359 @@
+.page {
+  display: grid;
+  gap: var(--space-4);
+  padding: clamp(var(--space-4), 3vw, var(--space-8))
+    clamp(var(--space-4), 6vw, 6.5rem);
+}
+
+.breadcrumb {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  line-height: 1.3;
+}
+
+.productCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(22rem, 0.85fr);
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.gallery {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  min-height: 48rem;
+}
+
+.mainImageWrap {
+  display: grid;
+  place-items: center;
+  min-height: 36rem;
+}
+
+.mainImage {
+  width: 100%;
+  max-width: 100%;
+  max-height: 31rem;
+  object-fit: contain;
+  object-position: center 58%;
+}
+
+.thumbnailsSection {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.thumbNav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.thumbNavIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.thumbnails {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.thumbnail {
+  display: grid;
+  place-items: center;
+  min-height: 4.5rem;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-primary);
+  cursor: pointer;
+}
+
+.thumbnailActive {
+  border-color: var(--color-accent-primary);
+}
+
+.thumbnailImage {
+  max-width: 100%;
+  max-height: 3rem;
+  object-fit: contain;
+}
+
+.info {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  border-left: 1px solid var(--color-border-default);
+}
+
+.titleRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-4);
+}
+
+.title {
+  font-size: clamp(1.75rem, 2vw, 2.25rem);
+  line-height: 1.1;
+}
+
+.ratingSummary {
+  display: grid;
+  justify-items: end;
+  gap: 0.125rem;
+  min-width: 5rem;
+}
+
+.ratingTopRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ratingStar {
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-accent-primary);
+}
+
+.ratingValue {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.ratingCount {
+  font-size: var(--font-size-sm);
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+}
+
+.price {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.75rem, 2.6vw, 2.5rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent-success);
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.addToCartButton {
+  width: 12rem;
+  min-height: 2.5rem;
+}
+
+.cartIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.availability {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.descriptionText {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.definitionList {
+  display: grid;
+}
+
+.definitionRow {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.85fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.definitionTerm {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.definitionValue {
+  margin: 0;
+  justify-self: end;
+  font-size: var(--font-size-base);
+  text-align: right;
+}
+
+.reviewsCard {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.reviewsTitle {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.reviewInput {
+  display: flex;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.reviewStarButton {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent-primary);
+}
+
+.reviewStar {
+  width: 2rem;
+  height: 2rem;
+}
+
+.reviewsList {
+  display: grid;
+}
+
+.reviewRow {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.reviewStars {
+  display: inline-flex;
+  gap: 0.125rem;
+}
+
+.reviewStarFilled,
+.reviewStarMuted {
+  width: 1rem;
+  height: 1rem;
+}
+
+.reviewStarFilled {
+  color: var(--color-accent-primary);
+}
+
+.reviewStarMuted {
+  color: var(--color-border-default);
+}
+
+.reviewScore {
+  font-weight: var(--font-weight-bold);
+}
+
+.reviewAuthor,
+.reviewDate {
+  color: var(--color-text-primary);
+}
+
+.reviewDate {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.reviewsEmpty {
+  color: var(--color-text-secondary);
+}
+
+.loading {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+@media (max-width: 80rem) {
+  .productCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .info {
+    border-left: 0;
+    border-top: 1px solid var(--color-border-default);
+  }
+}
+
+@media (max-width: 40rem) {
+  .page {
+    padding-inline: var(--space-4);
+  }
+
+  .gallery,
+  .info,
+  .reviewsCard {
+    padding: var(--space-4);
+  }
+
+  .gallery {
+    min-height: auto;
+  }
+
+  .mainImageWrap {
+    min-height: 22rem;
+  }
+
+  .titleRow,
+  .actionRow,
+  .reviewRow {
+    grid-template-columns: 1fr;
+  }
+
+  .actionRow {
+    justify-items: start;
+  }
+
+  .reviewDate,
+  .reviewAuthor,
+  .reviewScore {
+    justify-self: start;
+  }
+
+  .thumbnailsSection {
+    grid-template-columns: 1fr;
+  }
+
+  .thumbNav {
+    display: none;
+  }
+
+  .thumbnails {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

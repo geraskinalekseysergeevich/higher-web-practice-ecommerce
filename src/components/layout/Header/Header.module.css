@@ -121,7 +121,9 @@
   text-decoration: none;
   white-space: nowrap;
   text-align: center;
-  transition: color 0.15s ease, transform 0.15s ease;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .cart:hover {

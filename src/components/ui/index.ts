@@ -15,6 +15,7 @@ export {
   CartIcon,
   DropdownIcon,
   SearchIcon,
+  StarIcon,
   UserIcon,
 } from './Icons/Icons'
 export type { InputProps } from './Input/Input'
