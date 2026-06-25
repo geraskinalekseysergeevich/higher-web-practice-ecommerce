@@ -21,26 +21,6 @@ const getOrderTags = (orders?: Order[]): ApiTag[] => {
   ]
 }
 
-const createOrderBody = (payload: CreateOrderBody) => {
-  const { userId, ...body } = payload
-
-  return {
-    ...body,
-    userId,
-    items: [],
-    totalPrice: 0,
-    status: 'pending' as const,
-    number: `ORDER-${Date.now()}`,
-    customer: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: body.phone,
-    },
-    createdAt: new Date().toISOString(),
-  }
-}
-
 const getOrdersEndpoint = (builder: ApiBuilder) =>
   builder.query<Order[], void>({
     query: () => ORDERS_URL,
@@ -82,7 +62,7 @@ const createOrderEndpoint = (builder: ApiBuilder) =>
     query: (payload) => ({
       url: ORDERS_URL,
       method: 'POST',
-      body: createOrderBody(payload),
+      body: payload,
     }),
     invalidatesTags: [createListTag(apiResources.orders)],
   })

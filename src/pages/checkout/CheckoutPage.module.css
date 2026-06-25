@@ -1,4 +1,194 @@
-.root {
+.page {
   display: grid;
   gap: var(--space-4);
+  padding:
+    clamp(var(--space-4), 2.5vw, var(--space-6))
+    clamp(var(--space-4), 6vw, 6.5rem)
+    clamp(var(--space-5), 3vw, var(--space-8));
+}
+
+.loading {
+  color: var(--color-text-secondary);
+}
+
+.header {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.formCard,
+.summaryCard {
+  padding: var(--space-5);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.commentField {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.commentLabel {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.commentInput {
+  min-height: 8rem;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font: inherit;
+  resize: vertical;
+}
+
+.options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.deliveryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.pickup {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.pickupList {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.switchRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.submit {
+  margin-top: var(--space-2);
+}
+
+.summary {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.summaryItems {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.summaryItem {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.summaryImage {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: contain;
+}
+
+.summaryInfo {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.summaryName {
+  font-weight: var(--font-weight-bold);
+}
+
+.summaryMeta {
+  color: var(--color-text-secondary);
+}
+
+.totals {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-default);
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.totalTerm,
+.totalValue {
+  margin: 0;
+}
+
+.totalTerm {
+  color: var(--color-text-secondary);
+}
+
+.totalValue {
+  font-weight: var(--font-weight-bold);
+}
+
+@media (max-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .page {
+    padding-inline: var(--space-4);
+  }
+
+  .formCard,
+  .summaryCard {
+    padding: var(--space-4);
+  }
+
+  .formGrid,
+  .deliveryGrid {
+    grid-template-columns: 1fr;
+  }
 }

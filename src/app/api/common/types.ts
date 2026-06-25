@@ -1,7 +1,7 @@
 import type {
   AddToCartPayload,
-  CreateOrderPayload,
   LoginPayload,
+  Order,
   ProductRating,
   ProductSort,
   RegisterPayload,
@@ -42,9 +42,7 @@ export type UpdateUserBody = {
   payload: UpdateProfilePayload
 }
 
-export type CreateOrderBody = CreateOrderPayload & {
-  userId: string
-}
+export type CreateOrderBody = Order
 
 export type RatingBody = Omit<ProductRating, 'createdAt'> & {
   createdAt?: string
