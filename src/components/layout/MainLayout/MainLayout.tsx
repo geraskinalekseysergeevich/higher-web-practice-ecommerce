@@ -1,14 +1,12 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
+import { selectIsAuthenticated } from '../../../app/auth/authSlice'
+import { useAppSelector } from '../../../app/hooks'
 import { Header } from '../Header/Header'
 import styles from './MainLayout.module.css'
 
 export const MainLayout = () => {
-  const { pathname } = useLocation()
-  const isAuthenticated =
-    pathname !== '/' &&
-    pathname !== '/login' &&
-    pathname !== '/register'
+  const isAuthenticated = useAppSelector(selectIsAuthenticated)
 
   return (
     <div className={styles.root}>

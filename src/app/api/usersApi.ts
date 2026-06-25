@@ -1,4 +1,4 @@
-import type { User } from '../../types'
+import type { StoredUser } from '../../types'
 import { emptySplitApi } from './baseApi'
 import { apiResources, createItemTag, createListTag } from './common/tags'
 import type {
@@ -11,7 +11,7 @@ import type {
 
 const USERS_URL = apiResources.users
 
-const getUserTags = (users?: User[]): ApiTag[] => {
+const getUserTags = (users?: StoredUser[]): ApiTag[] => {
   if (!users) {
     return [createListTag(apiResources.users)]
   }
@@ -28,6 +28,7 @@ const createUserBody = (payload: CreateUserBody) => {
 
   return {
     ...body,
+    id: crypto.randomUUID(),
     notifyByEmail: false,
     language: 'ru' as const,
     createdAt: new Date().toISOString(),
@@ -35,13 +36,13 @@ const createUserBody = (payload: CreateUserBody) => {
 }
 
 const getUsersEndpoint = (builder: ApiBuilder) =>
-  builder.query<User[], void>({
+  builder.query<StoredUser[], void>({
     query: () => USERS_URL,
     providesTags: (result) => getUserTags(result),
   })
 
 const getUserByIdEndpoint = (builder: ApiBuilder) =>
-  builder.query<User, string>({
+  builder.query<StoredUser, string>({
     query: (userId) => `${USERS_URL}/${userId}`,
     providesTags: (_result, _error, userId) => [
       createItemTag(apiResources.user, userId),
@@ -49,7 +50,7 @@ const getUserByIdEndpoint = (builder: ApiBuilder) =>
   })
 
 const createUserEndpoint = (builder: ApiBuilder) =>
-  builder.mutation<User, CreateUserBody>({
+  builder.mutation<StoredUser, CreateUserBody>({
     query: (payload) => ({
       url: USERS_URL,
       method: 'POST',
@@ -59,7 +60,7 @@ const createUserEndpoint = (builder: ApiBuilder) =>
   })
 
 const findUsersByCredentialsEndpoint = (builder: ApiBuilder) =>
-  builder.query<User[], UsersCredentials>({
+  builder.query<StoredUser[], UsersCredentials>({
     query: (credentials) => ({
       url: USERS_URL,
       params: credentials,
@@ -68,7 +69,7 @@ const findUsersByCredentialsEndpoint = (builder: ApiBuilder) =>
   })
 
 const updateUserEndpoint = (builder: ApiBuilder) =>
-  builder.mutation<User, UpdateUserBody>({
+  builder.mutation<StoredUser, UpdateUserBody>({
     query: ({ userId, payload }) => ({
       url: `${USERS_URL}/${userId}`,
       method: 'PATCH',

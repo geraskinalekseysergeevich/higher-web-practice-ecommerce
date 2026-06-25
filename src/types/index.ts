@@ -19,6 +19,7 @@ export type {
 export type {
   LoginPayload,
   RegisterPayload,
+  StoredUser,
   UpdateProfilePayload,
   User,
   UserProfile,

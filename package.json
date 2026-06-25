@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "test": "jest --runInBand",
     "preview": "vite preview",
     "server": "json-server --watch db.json --port 3001 --static ./public"
   },

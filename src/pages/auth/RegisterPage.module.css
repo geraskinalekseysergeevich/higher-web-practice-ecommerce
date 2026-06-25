@@ -2,6 +2,10 @@
   width: min(100%, 26rem);
 }
 
+.serverError {
+  margin-bottom: var(--space-2);
+}
+
 .footer {
   display: grid;
   gap: var(--space-1);

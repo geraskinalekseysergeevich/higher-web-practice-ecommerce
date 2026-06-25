@@ -27,15 +27,17 @@ export const Header = ({ isAuthenticated = false }: HeaderProps) => (
       <Search className={styles.search} />
 
       <div className={styles.actions}>
-        <Link className={styles.profile} to="/profile">
-          <UserIcon className={styles.profileIcon} />
-          <span className={styles.profileName}>Имя профиля</span>
-        </Link>
         {isAuthenticated ? (
-          <Link className={styles.cart} to="/cart">
-            <CartIcon className={styles.cartIcon} />
-            <span className={styles.cartName}>Корзина</span>
-          </Link>
+          <>
+            <Link className={styles.profile} to="/profile">
+              <UserIcon className={styles.profileIcon} />
+              <span className={styles.profileName}>Профиль</span>
+            </Link>
+            <Link className={styles.cart} to="/cart">
+              <CartIcon className={styles.cartIcon} />
+              <span className={styles.cartName}>Корзина</span>
+            </Link>
+          </>
         ) : (
           <Link className={styles.registerButton} to="/register">
             Зарегистрироваться

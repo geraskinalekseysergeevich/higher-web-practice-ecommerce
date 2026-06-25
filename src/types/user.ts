@@ -11,6 +11,10 @@ export type User = {
 
 export type UserProfile = User
 
+export type StoredUser = User & {
+  password: string
+}
+
 export type RegisterPayload = {
   firstName: string
   lastName: string
