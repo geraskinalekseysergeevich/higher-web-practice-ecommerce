@@ -32,26 +32,20 @@
   text-decoration: none;
 }
 
-.details {
+.preference {
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-top: 1px solid var(--color-border-default);
 }
 
-.detailRow {
-  display: grid;
-  gap: 0.25rem;
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--color-border-default);
-}
-
-.detailTerm {
+.preferenceLabel {
   color: var(--color-text-secondary);
 }
 
-.detailValue {
-  margin: 0;
+.preferenceValue {
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
 }
 
 @media (max-width: 40rem) {

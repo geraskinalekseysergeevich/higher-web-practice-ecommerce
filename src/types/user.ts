@@ -1,10 +1,12 @@
+export type LanguageCode = 'en' | 'es' | 'fr' | 'de' | 'it' | 'pt' | 'ru' | 'zh' | 'ja'
+
 export type User = {
   id: string
   firstName: string
   lastName: string
   email: string
   phone?: string
-  language?: 'ru' | 'en'
+  language?: LanguageCode
   notifyByEmail?: boolean
   createdAt: string
 }
@@ -32,5 +34,7 @@ export type UpdateProfilePayload = {
   firstName?: string
   lastName?: string
   email?: string
+  notifyByEmail?: boolean
+  language?: LanguageCode
   password?: string
 }

@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { NavLink } from 'react-router-dom'
 
 import styles from './ProfileTabs.module.css'
@@ -21,7 +22,7 @@ export const ProfileTabs = () => {
         <NavLink
           key={tab.to}
           className={({ isActive }) =>
-            isActive ? `${styles.link} ${styles.active}` : styles.link
+            clsx(styles.link, isActive && styles.active)
           }
           end={tab.end}
           to={tab.to}

@@ -17,6 +17,7 @@ export type {
   ProductSort,
 } from './product'
 export type {
+  LanguageCode,
   LoginPayload,
   RegisterPayload,
   StoredUser,

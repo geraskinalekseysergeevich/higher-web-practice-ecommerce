@@ -20,12 +20,8 @@
     color 0.15s ease;
 }
 
+.active,
 .link:hover {
-  color: var(--color-text-primary);
+  color: var(--color-accent-secondary);
   background: var(--color-surface-muted);
-}
-
-.active {
-  background: var(--color-accent-primary);
-  color: var(--color-text-inverse);
 }
