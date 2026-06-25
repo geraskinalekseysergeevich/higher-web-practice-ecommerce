@@ -21,6 +21,17 @@
   gap: 0.125rem;
 }
 
+.categoryTabs {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.subcategories {
+  display: grid;
+  gap: 0.125rem;
+  padding-left: var(--space-4);
+}
+
 .checklist {
   display: grid;
   gap: var(--space-2);

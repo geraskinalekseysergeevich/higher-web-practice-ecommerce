@@ -22,6 +22,25 @@
   align-items: center;
 }
 
+.dropdown {
+  position: relative;
+  min-width: 14rem;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 10;
+  display: grid;
+  min-width: 100%;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-card);
+}
+
 @media (max-width: 64rem) {
   .root {
     padding-inline: 0;
@@ -38,7 +57,13 @@
     width: 100%;
   }
 
-  .toolbar > * {
+  .dropdown {
     flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .menu {
+    left: 0;
+    right: 0;
   }
 }

@@ -2,6 +2,7 @@ import type { Product } from '../../../types'
 
 type ProductFacetOptions = {
   categories: string[]
+  subcategoriesByCategory: Record<string, string[]>
   styleOptions: string[]
   densityOptions: string[]
 }
@@ -27,6 +28,21 @@ export const getProductFacetOptions = (
   products: Product[]
 ): ProductFacetOptions => ({
   categories: getUniqueCharacteristicValues(products, 'категория'),
+  subcategoriesByCategory: getUniqueCharacteristicValues(products, 'категория').reduce<
+    Record<string, string[]>
+  >((accumulator, category) => {
+    const subcategories = products
+      .filter((product) => product.characteristics['категория'] === category)
+      .flatMap((product) => {
+        const value = product.characteristics['подкатегория']
+
+        return value ? [value] : []
+      })
+
+    accumulator[category] = Array.from(new Set(subcategories))
+
+    return accumulator
+  }, {}),
   styleOptions: getUniqueCharacteristicValues(products, 'стиль'),
   densityOptions: getUniqueCharacteristicValues(products, 'густота'),
 })

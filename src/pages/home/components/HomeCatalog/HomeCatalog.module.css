@@ -21,6 +21,14 @@
   gap: var(--space-4);
 }
 
+.list {
+  grid-template-columns: 1fr;
+}
+
+.list :global(article) {
+  width: 100%;
+}
+
 @media (max-width: 80rem) {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

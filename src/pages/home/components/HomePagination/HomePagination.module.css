@@ -1,11 +1,33 @@
 .root {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   min-height: 3rem;
   padding: var(--space-3) var(--space-4);
   border-top: 1px solid var(--color-border-default);
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
+}
+
+.pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.page {
+  min-width: 2.5rem;
+}
+
+.active {
+  pointer-events: none;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
 }
