@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import { useAddToCartMutation } from '../../app/api/cartApi'
 import { useGetProductByIdQuery } from '../../app/api/productsApi'
 import { useGetRatingsByProductIdQuery } from '../../app/api/ratingsApi'
 import {
@@ -29,6 +30,7 @@ const formatBreadcrumb = (
 
 export const ProductPage = () => {
   const { productId } = useParams()
+  const [addToCart, { isLoading: isAddingToCart }] = useAddToCartMutation()
   const { data: product, isLoading } = useGetProductByIdQuery(productId ?? '', {
     skip: !productId,
   })
@@ -95,6 +97,18 @@ export const ProductPage = () => {
         : 0
 
     setActiveImage(images[nextIndex])
+  }
+
+  const handleAddToCart = async () => {
+    if (!product) {
+      return
+    }
+
+    try {
+      await addToCart({ productId: product.id }).unwrap()
+    } catch {
+      // Ignore the failed mock mutation for now.
+    }
   }
 
   return (
@@ -185,7 +199,9 @@ export const ProductPage = () => {
               type="button"
               size="md"
               iconOnly
+              disabled={!product.inStock || isAddingToCart}
               aria-label="Добавить товар в корзину"
+              onClick={handleAddToCart}
             >
               <CartIcon className={styles.cartIcon} />
             </Button>
