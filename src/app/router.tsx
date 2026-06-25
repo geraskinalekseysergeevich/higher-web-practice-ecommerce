@@ -16,6 +16,7 @@ import { OrderHistoryPage } from '../pages/orders/OrderHistoryPage'
 import { ProductPage } from '../pages/product/ProductPage'
 import { ProfileEditPage } from '../pages/profile/ProfileEditPage'
 import { ProfilePage } from '../pages/profile/ProfilePage'
+import { RequireAuth } from './router/RequireAuth'
 
 const routes: RouteObject[] = [
   {
@@ -24,12 +25,17 @@ const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: 'product/:productId', element: <ProductPage /> },
-      { path: 'profile', element: <ProfilePage /> },
-      { path: 'profile/edit', element: <ProfileEditPage /> },
-      { path: 'orders', element: <OrderHistoryPage /> },
-      { path: 'cart', element: <CartPage /> },
-      { path: 'checkout', element: <CheckoutPage /> },
-      { path: 'confirmation/:orderId', element: <OrderConfirmationPage /> },
+      {
+        element: <RequireAuth />,
+        children: [
+          { path: 'profile', element: <ProfilePage /> },
+          { path: 'profile/edit', element: <ProfileEditPage /> },
+          { path: 'orders', element: <OrderHistoryPage /> },
+          { path: 'cart', element: <CartPage /> },
+          { path: 'checkout', element: <CheckoutPage /> },
+          { path: 'confirmation/:orderId', element: <OrderConfirmationPage /> },
+        ],
+      },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
