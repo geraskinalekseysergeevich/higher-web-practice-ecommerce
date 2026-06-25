@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 
 import ArrowIconSvg from '../../../assets/Arrow.svg?react'
+import CameraIconSvg from '../../../assets/Camera.svg?react'
 import DropdownIconSvg from '../../../assets/Dropdown.svg?react'
 import SearchIconSvg from '../../../assets/Search.svg?react'
 import ShoppingBagIconSvg from '../../../assets/Shopping_bag.svg?react'
@@ -22,6 +23,10 @@ export const SearchIcon = ({ className }: IconProps) => (
 
 export const UserIcon = ({ className }: IconProps) => (
   <UserIconSvg aria-hidden="true" focusable="false" className={className} />
+)
+
+export const CameraIcon = ({ className }: IconProps) => (
+  <CameraIconSvg aria-hidden="true" focusable="false" className={className} />
 )
 
 export const CartIcon = ({ className }: IconProps) => (

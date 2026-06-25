@@ -20,6 +20,7 @@
 
 .root:hover {
   background: rgba(37, 99, 235, 0.06);
+  color: var(--color-accent-secondary);
 }
 
 .root:focus-visible {
@@ -28,6 +29,7 @@
 
 .selected {
   background: rgba(37, 99, 235, 0.1);
+  color: var(--color-accent-secondary);
 }
 
 .selected:hover {

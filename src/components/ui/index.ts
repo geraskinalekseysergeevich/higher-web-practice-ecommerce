@@ -12,6 +12,7 @@ export type { FormFieldProps } from './FormField/FormField'
 export { FormField } from './FormField/FormField'
 export {
   ArrowIcon,
+  CameraIcon,
   CartIcon,
   DropdownIcon,
   SearchIcon,
@@ -27,6 +28,8 @@ export type { RadioProps } from './Radio/Radio'
 export { Radio } from './Radio/Radio'
 export type { SectionHeadingProps } from './SectionHeading/SectionHeading'
 export { SectionHeading } from './SectionHeading/SectionHeading'
+export type { SelectProps } from './Select/Select'
+export { Select } from './Select/Select'
 export type { SelectButtonProps } from './SelectButton/SelectButton'
 export { SelectButton } from './SelectButton/SelectButton'
 export type { ServerErrorProps } from './ServerError/ServerError'

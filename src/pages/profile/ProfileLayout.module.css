@@ -1,0 +1,26 @@
+.page {
+  display: grid;
+  grid-template-columns: minmax(14rem, 16rem) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  padding:
+    clamp(var(--space-4), 2.5vw, var(--space-6))
+    clamp(var(--space-4), 6vw, 6.5rem)
+    clamp(var(--space-5), 3vw, var(--space-8));
+}
+
+.content {
+  min-width: 0;
+}
+
+@media (max-width: 64rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .page {
+    padding-inline: var(--space-4);
+  }
+}
