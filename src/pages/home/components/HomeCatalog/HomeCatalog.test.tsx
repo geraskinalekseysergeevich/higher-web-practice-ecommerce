@@ -32,6 +32,7 @@ describe('HomeCatalog', () => {
       <MemoryRouter>
         <HomeCatalog
           currentPage={1}
+          isError={false}
           isLoading={false}
           onClearFilters={jest.fn()}
           onPageChange={jest.fn()}

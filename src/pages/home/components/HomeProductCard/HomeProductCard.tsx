@@ -30,18 +30,23 @@ export const HomeProductCard = ({
       className={styles.link}
       to={`/product/${product.id}`}
       aria-label={`Открыть товар «${product.name}»`}
-    >
-      <img
+      >
+        <img
         className={styles.image}
         src={product.images[0] ?? '/favicon.svg'}
         alt={product.name}
         loading="lazy"
-      />
-      <p className={styles.name}>{product.name}</p>
-    </Link>
+        />
+        <p className={styles.name}>{product.name}</p>
+        {view === 'table' ? (
+          <p className={styles.price}>{priceFormatter.format(product.price)} ₽</p>
+        ) : null}
+      </Link>
 
     <div className={styles.actions}>
-      <p className={styles.price}>{priceFormatter.format(product.price)} ₽</p>
+      {view === 'list' ? (
+        <p className={styles.price}>{priceFormatter.format(product.price)} ₽</p>
+      ) : null}
 
       {quantity > 0 ? (
         <div
@@ -82,11 +87,19 @@ export const HomeProductCard = ({
           type="button"
           variant="primary"
           size="md"
-          disabled={isAddingToCart}
-          aria-label={`Добавить «${product.name}» в корзину`}
+          disabled={!product.inStock || isAddingToCart}
+          aria-label={
+            product.inStock
+              ? `Добавить «${product.name}» в корзину`
+              : `«${product.name}» нет в наличии`
+          }
           onClick={() => onAddToCart(product.id)}
         >
-          <CartIcon className={styles.cartIcon} />
+          {product.inStock ? (
+            <CartIcon className={styles.cartIcon} />
+          ) : (
+            'Нет в наличии'
+          )}
         </Button>
       )}
     </div>

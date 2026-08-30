@@ -34,11 +34,6 @@ export const HomeTopBar = ({
   const [sortOpen, setSortOpen] = useState(false)
   const [viewOpen, setViewOpen] = useState(false)
 
-  const selectedSortLabel =
-    sortOptions.find((option) => option.value === sort)?.label ?? sortOptions[0].label
-  const selectedViewLabel =
-    viewOptions.find((option) => option.value === view)?.label ?? viewOptions[0].label
-
   return (
     <div className={styles.root}>
       <h1 id="home-title" className={styles.title}>
@@ -49,7 +44,8 @@ export const HomeTopBar = ({
         <div className={styles.dropdown}>
           <SelectButton
             aria-label="Сортировка товаров"
-            label={selectedSortLabel}
+            className={styles.sortButton}
+            label="Сортировка"
             onClick={() => {
               setSortOpen((current) => !current)
               setViewOpen(false)
@@ -58,7 +54,11 @@ export const HomeTopBar = ({
           />
 
           {sortOpen ? (
-            <div className={styles.menu} role="menu" aria-label="Сортировка товаров">
+            <div
+              className={styles.menu}
+              role="menu"
+              aria-label="Сортировка товаров"
+            >
               {sortOptions.map((option) => (
                 <ListButton
                   key={option.value}
@@ -77,7 +77,8 @@ export const HomeTopBar = ({
         <div className={styles.dropdown}>
           <SelectButton
             aria-label="Отображение"
-            label={selectedViewLabel}
+            className={styles.viewButton}
+            label="Отображение"
             onClick={() => {
               setViewOpen((current) => !current)
               setSortOpen(false)

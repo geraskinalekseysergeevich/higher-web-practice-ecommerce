@@ -2,12 +2,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  min-height: 3rem;
-  padding: var(--space-3) var(--space-4);
-  border-top: 1px solid var(--color-border-default);
-  color: var(--color-text-secondary);
+  gap: var(--space-6);
+  min-height: 2rem;
+  padding: 0;
+  color: var(--color-text-primary);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
 }
@@ -15,19 +13,105 @@
 .pages {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
-  justify-content: center;
 }
 
 .page {
-  min-width: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.page:hover,
+.page:focus-visible {
+  background: var(--color-bg-disable);
 }
 
 .active {
   pointer-events: none;
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
 }
 
 .icon {
   width: 1rem;
   height: 1rem;
+}
+
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.arrow:hover:not(:disabled),
+.arrow:focus-visible:not(:disabled) {
+  background: var(--color-bg-disable);
+}
+
+.arrow:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.75rem;
+  height: 2rem;
+}
+
+.goTo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+.goToInput {
+  width: 2.5625rem;
+  height: 2rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.goToInput:focus-visible {
+  border-color: var(--color-border-focus);
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (max-width: 40rem) {
+  .root {
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
+  .goTo {
+    display: none;
+  }
 }

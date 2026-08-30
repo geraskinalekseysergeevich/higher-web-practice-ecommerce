@@ -1,6 +1,7 @@
 import type { Product, ProductSort } from '../../../types'
 
 export type HomeProductsFilters = {
+  query?: string
   category?: string
   subcategory?: string
   styles?: string[]
@@ -62,6 +63,7 @@ export const getVisibleHomeProducts = (
   filters: HomeProductsFilters = {}
 ): HomeProductsResult => {
   const {
+    query,
     category,
     subcategory,
     styles = [],
@@ -75,7 +77,11 @@ export const getVisibleHomeProducts = (
     pageSize = 12,
   } = filters
 
+  const normalizedQuery = query?.trim().toLocaleLowerCase('ru-RU') ?? ''
+
   const filteredProducts = products.filter((product) => {
+    const matchesQuery =
+      !normalizedQuery || product.name.toLocaleLowerCase('ru-RU').includes(normalizedQuery)
     const matchesCategory = hasCharacteristicValue(
       product,
       'категория',
@@ -99,6 +105,7 @@ export const getVisibleHomeProducts = (
     const matchesMaxPrice = maxPrice === undefined || product.price <= maxPrice
 
     return (
+      matchesQuery &&
       matchesCategory &&
       matchesSubcategory &&
       matchesStyle &&

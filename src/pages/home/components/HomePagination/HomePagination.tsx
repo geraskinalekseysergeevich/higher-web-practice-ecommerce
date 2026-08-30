@@ -1,6 +1,4 @@
-import clsx from 'clsx'
-
-import { ArrowIcon, Button } from '../../../../components/ui'
+import { ArrowIcon } from '../../../../components/ui'
 import styles from './HomePagination.module.css'
 
 type HomePaginationProps = {
@@ -10,7 +8,13 @@ type HomePaginationProps = {
 }
 
 const getPageNumbers = (currentPage: number, totalPages: number) => {
-  const pages = new Set<number>([1, totalPages, currentPage - 1, currentPage, currentPage + 1])
+  const pages = new Set<number>([
+    1,
+    totalPages,
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+  ])
 
   return Array.from(pages)
     .filter((page) => page >= 1 && page <= totalPages)
@@ -27,44 +31,81 @@ export const HomePagination = ({
   }
 
   const pages = getPageNumbers(currentPage, totalPages)
+  const pageItems = pages.flatMap((page, index) => {
+    const previousPage = pages[index - 1]
+
+    return [
+      ...(previousPage && page - previousPage > 1
+        ? [{ type: 'ellipsis' as const, key: `ellipsis-${page}` }]
+        : []),
+      { type: 'page' as const, page, key: `page-${page}` },
+    ]
+  })
 
   return (
     <nav className={styles.root} aria-label="Пагинация товаров">
-      <Button
+      <button
+        className={styles.arrow}
         disabled={currentPage === 1}
         aria-label="Предыдущая страница"
         onClick={() => onPageChange(currentPage - 1)}
-        iconOnly
-        size="sm"
-        variant="secondary"
+        type="button"
       >
         <ArrowIcon className={styles.icon} />
-      </Button>
+      </button>
 
       <div className={styles.pages}>
-        {pages.map((page) => (
-          <Button
-            key={page}
-            className={clsx(styles.page, page === currentPage && styles.active)}
-            onClick={() => onPageChange(page)}
-            size="sm"
-            variant={page === currentPage ? 'primary' : 'secondary'}
-          >
-            {page}
-          </Button>
-        ))}
+        {pageItems.map((item) =>
+          item.type === 'ellipsis' ? (
+            <span key={item.key} className={styles.ellipsis} aria-hidden="true">
+              …
+            </span>
+          ) : (
+            <button
+              key={item.key}
+              aria-current={item.page === currentPage ? 'page' : undefined}
+              className={`${styles.page} ${item.page === currentPage ? styles.active : ''}`}
+              onClick={() => onPageChange(item.page)}
+              type="button"
+            >
+              {item.page}
+            </button>
+          )
+        )}
       </div>
 
-      <Button
+      <button
+        className={styles.arrow}
         disabled={currentPage === totalPages}
         aria-label="Следующая страница"
         onClick={() => onPageChange(currentPage + 1)}
-        iconOnly
-        size="sm"
-        variant="secondary"
+        type="button"
       >
         <ArrowIcon className={styles.icon} flipped />
-      </Button>
+      </button>
+
+      <label className={styles.goTo}>
+        <input
+          aria-label="Перейти на страницу"
+          className={styles.goToInput}
+          defaultValue={currentPage}
+          key={currentPage}
+          inputMode="numeric"
+          max={totalPages}
+          min={1}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              const page = Number(event.currentTarget.value)
+
+              if (Number.isInteger(page) && page >= 1 && page <= totalPages) {
+                onPageChange(page)
+              }
+            }
+          }}
+          type="number"
+        />
+        <span>Переход на страницу</span>
+      </label>
     </nav>
   )
 }

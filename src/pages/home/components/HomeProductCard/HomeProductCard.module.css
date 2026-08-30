@@ -29,8 +29,11 @@
 .image {
   width: 100%;
   height: 10.75rem;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
+  background: transparent;
+  filter: brightness(1.04);
+  mix-blend-mode: multiply;
 }
 
 .root[data-view='list'] .image {
@@ -77,6 +80,12 @@
 
 .root[data-view='table'] .name {
   color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  margin-bottom: var(--space-0-5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .price {
@@ -126,6 +135,46 @@
   justify-self: start;
 }
 
+.root[data-view='table'] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  border-radius: var(--radius-lg);
+}
+
+.root[data-view='table'] .link {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.root[data-view='table'] .image {
+  height: 10.75rem;
+}
+
+.root[data-view='table'] .price {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-sm);
+}
+
+.root[data-view='table'] .actions {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+}
+
+.root[data-view='table'] .button {
+  width: 100%;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+}
+
 .quantityButton {
   width: 100%;
 }
@@ -142,6 +191,6 @@
 }
 
 .cartIcon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }

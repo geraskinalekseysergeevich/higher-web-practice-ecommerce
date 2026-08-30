@@ -1,6 +1,10 @@
 .root {
-  padding: var(--space-5);
+  padding: var(--space-6);
   gap: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-card);
 }
 
 .group {
@@ -60,4 +64,10 @@
 .clearButton {
   width: 100%;
   min-height: 2.5rem;
+}
+
+@media (max-width: 40rem) {
+  .root {
+    display: none;
+  }
 }

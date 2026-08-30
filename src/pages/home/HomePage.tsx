@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import clsx from 'clsx'
+import { type FormEvent, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { useGetAllProductsQuery } from '../../app/api/productsApi'
+import { Search } from '../../components/layout/Search/Search'
 import { getProductFacetOptions } from '../../entities/product/lib/getProductFacetOptions'
 import type { ProductSort } from '../../types'
 import { HomeCatalog } from './components/HomeCatalog/HomeCatalog'
@@ -10,16 +12,32 @@ import { HomeTopBar } from './components/HomeTopBar/HomeTopBar'
 import styles from './HomePage.module.css'
 import { getVisibleHomeProducts } from './lib/homeProducts'
 
-export const HomePage = () => {
-  const { data: allProducts = [], isLoading: isAllProductsLoading } =
-    useGetAllProductsQuery()
+type HomePageProps = {
+  category?: string
+  subcategory?: string
+  categoryView?: boolean
+}
+
+export const HomePage = ({
+  category: categoryFromPath,
+  subcategory: subcategoryFromPath,
+  categoryView = false,
+}: HomePageProps = {}) => {
+  const {
+    data: allProducts = [],
+    isError: isAllProductsError,
+    isLoading: isAllProductsLoading,
+  } = useGetAllProductsQuery()
   const [searchParams, setSearchParams] = useSearchParams()
   const { categories, styleOptions, densityOptions, subcategoriesByCategory } =
     getProductFacetOptions(allProducts)
 
-  const selectedCategory = searchParams.get('category') ?? undefined
-  const selectedSubcategory = searchParams.get('subcategory') ?? undefined
+  const selectedCategory =
+    searchParams.get('category') ?? categoryFromPath ?? undefined
+  const selectedSubcategory =
+    searchParams.get('subcategory') ?? subcategoryFromPath ?? undefined
   const selectedStyles = searchParams.getAll('style')
+  const query = searchParams.get('q') ?? ''
   const selectedDensity = searchParams.get('density') ?? undefined
   const inStockOnly = searchParams.get('inStock') === '1'
   const ratedOnly = searchParams.get('rated') === '1'
@@ -35,11 +53,12 @@ export const HomePage = () => {
     sortParam === 'rating'
       ? sortParam
       : 'newest'
-  const view = viewParam === 'table' ? 'table' : 'list'
+  const view = viewParam === 'list' ? 'list' : 'table'
 
   const visibleProducts = useMemo(
     () =>
       getVisibleHomeProducts(allProducts, {
+        query,
         category: selectedCategory,
         subcategory: selectedSubcategory,
         styles: selectedStyles,
@@ -64,6 +83,7 @@ export const HomePage = () => {
       selectedDensity,
       selectedStyles,
       selectedSubcategory,
+      query,
     ]
   )
 
@@ -101,6 +121,26 @@ export const HomePage = () => {
     setSingleParam(key, value ? '1' : undefined)
   }
 
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const nextQuery = String(
+      new FormData(event.currentTarget).get('search') ?? ''
+    ).trim()
+
+    setSearchParams((currentParams) => {
+      const params = new URLSearchParams(currentParams)
+
+      if (nextQuery) {
+        params.set('q', nextQuery)
+      } else {
+        params.delete('q')
+      }
+
+      params.set('page', '1')
+      return params
+    })
+  }
+
   const toggleStyle = (style: string) => {
     updateSearchParams((params) => {
       const nextStyles = params
@@ -135,8 +175,107 @@ export const HomePage = () => {
     })
   }
 
+  const activeFilters = [
+    ...(selectedCategory
+      ? [
+          {
+            id: 'category',
+            label: `Категория: ${selectedCategory}`,
+            onRemove: () =>
+              updateSearchParams((params) => {
+                params.delete('category')
+                params.delete('subcategory')
+                params.set('page', '1')
+                return params
+              }),
+          },
+        ]
+      : []),
+    ...(selectedSubcategory
+      ? [
+          {
+            id: 'subcategory',
+            label: `Подкатегория: ${selectedSubcategory}`,
+            onRemove: () => setSingleParam('subcategory'),
+          },
+        ]
+      : []),
+    ...selectedStyles.map((style) => ({
+      id: `style-${style}`,
+      label: `Стиль: ${style}`,
+      onRemove: () => toggleStyle(style),
+    })),
+    ...(selectedDensity
+      ? [
+          {
+            id: 'density',
+            label: `Густота: ${selectedDensity}`,
+            onRemove: () => setSingleParam('density'),
+          },
+        ]
+      : []),
+    ...(inStockOnly
+      ? [
+          {
+            id: 'in-stock',
+            label: 'В наличии',
+            onRemove: () => setBooleanParam('inStock', false),
+          },
+        ]
+      : []),
+    ...(ratedOnly
+      ? [
+          {
+            id: 'rated',
+            label: 'С рейтингом',
+            onRemove: () => setBooleanParam('rated', false),
+          },
+        ]
+      : []),
+    ...(minPrice
+      ? [
+          {
+            id: 'min-price',
+            label: `Цена от: ${minPrice} ₽`,
+            onRemove: () => setSingleParam('minPrice'),
+          },
+        ]
+      : []),
+    ...(maxPrice
+      ? [
+          {
+            id: 'max-price',
+            label: `Цена до: ${maxPrice} ₽`,
+            onRemove: () => setSingleParam('maxPrice'),
+          },
+        ]
+      : []),
+  ]
+
   return (
-    <section className={styles.page} aria-labelledby="home-title">
+    <section
+      className={clsx(styles.page, categoryView && styles.categoryPage)}
+      aria-labelledby="home-title"
+    >
+      <Search
+        className={styles.mobileSearch}
+        compact
+        defaultValue={query}
+        onSubmit={handleSearch}
+      />
+      {categoryView ? (
+        <div className={styles.mobileCategoryHeader}>
+          <div className={styles.breadcrumb}>
+            <span>Усы</span>
+            <span>/</span>
+            <span>{selectedCategory}</span>
+          </div>
+          <div className={styles.categoryTitle}>
+            <h1>{selectedSubcategory}</h1>
+            <span aria-hidden="true">⌄</span>
+          </div>
+        </div>
+      ) : null}
       <div className={styles.layout}>
         <HomeSidebar
           categories={categories}
@@ -195,9 +334,32 @@ export const HomePage = () => {
             sort={sort}
             view={view}
           />
+          {activeFilters.length > 0 ? (
+            <div className={styles.filters} aria-label="Выбранные фильтры">
+              {activeFilters.map((filter) => (
+                <button
+                  key={filter.id}
+                  aria-label={`Убрать фильтр «${filter.label}»`}
+                  className={styles.filter}
+                  onClick={filter.onRemove}
+                  type="button"
+                >
+                  <span>{filter.label}</span>
+                  <span aria-hidden="true" className={styles.filterClose}>
+                    ×
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : null}
           <HomeCatalog
-            currentPage={visibleProducts.totalPages < currentPage ? visibleProducts.totalPages : currentPage}
+            currentPage={
+              visibleProducts.totalPages < currentPage
+                ? visibleProducts.totalPages
+                : currentPage
+            }
             isLoading={isAllProductsLoading}
+            isError={isAllProductsError}
             onClearFilters={clearFilters}
             onPageChange={(page) =>
               updateSearchParams((params) => {

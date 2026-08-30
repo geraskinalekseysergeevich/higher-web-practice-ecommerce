@@ -5,8 +5,12 @@
 }
 
 .catalog {
-  padding: var(--space-5);
   gap: var(--space-5);
+  padding: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-card);
 }
 
 .loading {
@@ -43,6 +47,15 @@
 
 @media (max-width: 40rem) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-1);
+  }
+
+  .catalog {
+    gap: var(--space-5);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }

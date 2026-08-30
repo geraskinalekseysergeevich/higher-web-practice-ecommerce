@@ -110,4 +110,10 @@ describe('getVisibleHomeProducts', () => {
       '1',
     ])
   })
+
+  it('searches by product name only', () => {
+    const result = getVisibleHomeProducts(products, { query: 'alp' })
+
+    expect(result.items.map((product: Product) => product.id)).toEqual(['1'])
+  })
 })

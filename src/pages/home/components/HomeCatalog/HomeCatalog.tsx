@@ -7,7 +7,7 @@ import {
   useRemoveFromCartMutation,
   useUpdateCartItemMutation,
 } from '../../../../app/api/cartApi'
-import { Card, EmptyState } from '../../../../components/ui'
+import { Card, EmptyState, ServerError } from '../../../../components/ui'
 import type { Product } from '../../../../types'
 import { HomePagination } from '../HomePagination/HomePagination'
 import { HomeProductCard } from '../HomeProductCard/HomeProductCard'
@@ -16,6 +16,7 @@ import styles from './HomeCatalog.module.css'
 type HomeCatalogProps = {
   products: Product[]
   isLoading: boolean
+  isError: boolean
   currentPage: number
   totalPages: number
   view: 'list' | 'table'
@@ -25,6 +26,7 @@ type HomeCatalogProps = {
 
 export const HomeCatalog = ({
   products,
+  isError,
   isLoading,
   currentPage,
   totalPages,
@@ -89,6 +91,8 @@ export const HomeCatalog = ({
       <Card className={styles.catalog}>
         {isLoading ? (
           <p className={styles.loading}>Загружаем товары...</p>
+        ) : isError ? (
+          <ServerError message="Не удалось загрузить товары. Проверьте, что запущен локальный сервер данных." />
         ) : products.length === 0 ? (
           <EmptyState
             title="Товары не найдены"
