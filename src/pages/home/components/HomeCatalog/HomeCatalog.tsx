@@ -1,5 +1,7 @@
+import { skipToken } from '@reduxjs/toolkit/query'
 import clsx from 'clsx'
 import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   useAddToCartMutation,
@@ -7,6 +9,8 @@ import {
   useRemoveFromCartMutation,
   useUpdateCartItemMutation,
 } from '../../../../app/api/cartApi'
+import { selectAuthenticatedUser } from '../../../../app/auth/authSlice'
+import { useAppSelector } from '../../../../app/hooks'
 import { Card, EmptyState, ServerError } from '../../../../components/ui'
 import type { Product } from '../../../../types'
 import { HomePagination } from '../HomePagination/HomePagination'
@@ -34,22 +38,44 @@ export const HomeCatalog = ({
   onPageChange,
   onClearFilters,
 }: HomeCatalogProps) => {
-  const { data: cartItems = [] } = useGetCartQuery()
+  const authenticatedUser = useAppSelector(selectAuthenticatedUser)
+  const isAuthenticated = Boolean(authenticatedUser)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const {
+    data: cartItems = [],
+    isError: isCartError,
+    refetch: refetchCart,
+  } = useGetCartQuery(authenticatedUser?.id ?? skipToken)
   const [addToCart] = useAddToCartMutation()
   const [updateCartItem] = useUpdateCartItemMutation()
   const [removeFromCart] = useRemoveFromCartMutation()
   const [pendingProductId, setPendingProductId] = useState<string | null>(null)
+  const [cartError, setCartError] = useState('')
   const cartItemsByProductId = new Map(
     cartItems.map((item) => [item.productId, item])
   )
 
   const handleAddToCart = async (productId: string) => {
+    if (!isAuthenticated) {
+      navigate('/login', {
+        state: {
+          from: { pathname: location.pathname, search: location.search },
+        },
+      })
+      return
+    }
+
     setPendingProductId(productId)
+    setCartError('')
 
     try {
-      await addToCart({ productId }).unwrap()
+      await addToCart({
+        productId,
+        userId: authenticatedUser?.id ?? '',
+      }).unwrap()
     } catch {
-      // Keep the UI responsive even if the mock API request fails.
+      setCartError('Не удалось обновить корзину')
     } finally {
       setPendingProductId(null)
     }
@@ -58,32 +84,49 @@ export const HomeCatalog = ({
   const handleIncrease = async (productId: string) => {
     const item = cartItemsByProductId.get(productId)
 
-    if (!item) {
-      return handleAddToCart(productId)
-    }
+    setPendingProductId(productId)
+    setCartError('')
 
-    await updateCartItem({
-      id: item.id,
-      quantity: item.quantity + 1,
-    })
+    try {
+      if (!item) {
+        await handleAddToCart(productId)
+        return
+      }
+
+      await updateCartItem({
+        id: item.id,
+        quantity: item.quantity + 1,
+      }).unwrap()
+    } catch {
+      setCartError('Не удалось обновить корзину')
+    } finally {
+      setPendingProductId(null)
+    }
   }
 
   const handleDecrease = async (productId: string) => {
     const item = cartItemsByProductId.get(productId)
 
-    if (!item) {
-      return
-    }
+    if (!item) return
 
-    if (item.quantity <= 1) {
-      await removeFromCart(item.id)
-      return
-    }
+    setPendingProductId(productId)
+    setCartError('')
 
-    await updateCartItem({
-      id: item.id,
-      quantity: item.quantity - 1,
-    })
+    try {
+      if (item.quantity <= 1) {
+        await removeFromCart(item.id).unwrap()
+        return
+      }
+
+      await updateCartItem({
+        id: item.id,
+        quantity: item.quantity - 1,
+      }).unwrap()
+    } catch {
+      setCartError('Не удалось обновить корзину')
+    } finally {
+      setPendingProductId(null)
+    }
   }
 
   return (
@@ -120,6 +163,14 @@ export const HomeCatalog = ({
             ))}
           </div>
         )}
+
+        {isCartError ? (
+          <ServerError
+            message="Не удалось загрузить корзину."
+            onRetry={() => void refetchCart()}
+          />
+        ) : null}
+        {cartError ? <p role="alert">{cartError}</p> : null}
 
         <HomePagination
           currentPage={currentPage}

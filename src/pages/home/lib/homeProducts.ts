@@ -35,13 +35,17 @@ const sortProducts = (products: Product[], sort?: ProductSort) => {
           return right.rating - left.rating
         }
 
-        return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
+        return (
+          new Date(right.createdAt).getTime() -
+          new Date(left.createdAt).getTime()
+        )
       })
     case 'newest':
     default:
       return items.sort(
         (left, right) =>
-          new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
+          new Date(right.createdAt).getTime() -
+          new Date(left.createdAt).getTime()
       )
   }
 }
@@ -81,7 +85,8 @@ export const getVisibleHomeProducts = (
 
   const filteredProducts = products.filter((product) => {
     const matchesQuery =
-      !normalizedQuery || product.name.toLocaleLowerCase('ru-RU').includes(normalizedQuery)
+      !normalizedQuery ||
+      product.name.toLocaleLowerCase('ru-RU').includes(normalizedQuery)
     const matchesCategory = hasCharacteristicValue(
       product,
       'категория',
@@ -94,11 +99,7 @@ export const getVisibleHomeProducts = (
     )
     const matchesStyle =
       styles.length === 0 || styles.includes(product.characteristics['стиль'])
-    const matchesDensity = hasCharacteristicValue(
-      product,
-      'густота',
-      density
-    )
+    const matchesDensity = hasCharacteristicValue(product, 'густота', density)
     const matchesInStock = !inStockOnly || product.inStock
     const matchesRating = !ratedOnly || product.rating > 0
     const matchesMinPrice = minPrice === undefined || product.price >= minPrice

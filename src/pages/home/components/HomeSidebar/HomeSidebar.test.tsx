@@ -39,9 +39,15 @@ describe('HomeSidebar', () => {
       />
     )
 
-    expect(screen.getByRole('button', { name: 'Все категории' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Классические' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Все подкатегории' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Все категории' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Классические' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Все подкатегории' })
+    ).toBeInTheDocument()
     expect(
       screen.queryByRole('heading', { name: 'Подкатегория' })
     ).not.toBeInTheDocument()

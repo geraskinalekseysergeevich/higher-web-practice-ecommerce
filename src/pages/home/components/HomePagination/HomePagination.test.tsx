@@ -9,7 +9,11 @@ describe('HomePagination', () => {
     const onPageChange = jest.fn()
 
     render(
-      <HomePagination currentPage={2} onPageChange={onPageChange} totalPages={4} />
+      <HomePagination
+        currentPage={2}
+        onPageChange={onPageChange}
+        totalPages={4}
+      />
     )
 
     expect(screen.getByLabelText('Предыдущая страница')).toBeInTheDocument()

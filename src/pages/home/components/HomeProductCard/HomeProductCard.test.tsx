@@ -56,12 +56,16 @@ describe('HomeProductCard', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('group', { name: 'Количество товара Alpha' })).toHaveTextContent(
-      '2'
-    )
+    expect(
+      screen.getByRole('group', { name: 'Количество товара Alpha' })
+    ).toHaveTextContent('2')
 
-    await user.click(screen.getByRole('button', { name: 'Уменьшить количество Alpha' }))
-    await user.click(screen.getByRole('button', { name: 'Увеличить количество Alpha' }))
+    await user.click(
+      screen.getByRole('button', { name: 'Уменьшить количество Alpha' })
+    )
+    await user.click(
+      screen.getByRole('button', { name: 'Увеличить количество Alpha' })
+    )
 
     expect(onDecrease).toHaveBeenCalled()
     expect(onIncrease).toHaveBeenCalled()

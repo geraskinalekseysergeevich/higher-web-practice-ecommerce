@@ -18,6 +18,11 @@ type HomePageProps = {
   categoryView?: boolean
 }
 
+const parsePriceParam = (value: string) => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
+}
+
 export const HomePage = ({
   category: categoryFromPath,
   subcategory: subcategoryFromPath,
@@ -43,7 +48,10 @@ export const HomePage = ({
   const ratedOnly = searchParams.get('rated') === '1'
   const minPrice = searchParams.get('minPrice') ?? ''
   const maxPrice = searchParams.get('maxPrice') ?? ''
-  const currentPage = Number.parseInt(searchParams.get('page') ?? '1', 10) || 1
+  const currentPage = Math.max(
+    1,
+    Number.parseInt(searchParams.get('page') ?? '1', 10) || 1
+  )
   const sortParam = searchParams.get('sort')
   const viewParam = searchParams.get('view')
   const sort: ProductSort =
@@ -65,8 +73,8 @@ export const HomePage = ({
         density: selectedDensity,
         inStockOnly,
         ratedOnly,
-        minPrice: minPrice ? Number(minPrice) : undefined,
-        maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        minPrice: minPrice ? parsePriceParam(minPrice) : undefined,
+        maxPrice: maxPrice ? parsePriceParam(maxPrice) : undefined,
         sort,
         page: currentPage,
         pageSize: 12,
@@ -169,6 +177,7 @@ export const HomePage = ({
       params.delete('rated')
       params.delete('minPrice')
       params.delete('maxPrice')
+      params.delete('q')
       params.set('page', '1')
 
       return params
@@ -260,7 +269,9 @@ export const HomePage = ({
       <Search
         className={styles.mobileSearch}
         compact
+        key={searchParams.toString()}
         defaultValue={query}
+        onClear={clearFilters}
         onSubmit={handleSearch}
       />
       {categoryView ? (

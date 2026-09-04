@@ -61,7 +61,7 @@ export const HomeSidebar = ({
   onClearFilters,
 }: HomeSidebarProps) => {
   const subcategories = selectedCategory
-    ? subcategoriesByCategory[selectedCategory] ?? []
+    ? (subcategoriesByCategory[selectedCategory] ?? [])
     : []
 
   return (

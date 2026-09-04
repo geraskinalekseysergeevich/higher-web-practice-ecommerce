@@ -30,18 +30,21 @@ export const HomeProductCard = ({
       className={styles.link}
       to={`/product/${product.id}`}
       aria-label={`Открыть товар «${product.name}»`}
-      >
-        <img
+    >
+      <img
         className={styles.image}
-        src={product.images[0] ?? '/favicon.svg'}
+        src={product.images[0] ?? '/product-placeholder.svg'}
         alt={product.name}
         loading="lazy"
-        />
-        <p className={styles.name}>{product.name}</p>
-        {view === 'table' ? (
-          <p className={styles.price}>{priceFormatter.format(product.price)} ₽</p>
-        ) : null}
-      </Link>
+        onError={(event) => {
+          event.currentTarget.src = '/product-placeholder.svg'
+        }}
+      />
+      <p className={styles.name}>{product.name}</p>
+      {view === 'table' ? (
+        <p className={styles.price}>{priceFormatter.format(product.price)} ₽</p>
+      ) : null}
+    </Link>
 
     <div className={styles.actions}>
       {view === 'list' ? (
@@ -59,6 +62,7 @@ export const HomeProductCard = ({
             type="button"
             variant="secondary"
             size="sm"
+            disabled={isAddingToCart}
             aria-label={`Уменьшить количество ${product.name}`}
             onClick={onDecrease}
           >
@@ -75,6 +79,7 @@ export const HomeProductCard = ({
             type="button"
             variant="secondary"
             size="sm"
+            disabled={isAddingToCart || !product.inStock}
             aria-label={`Увеличить количество ${product.name}`}
             onClick={onIncrease}
           >

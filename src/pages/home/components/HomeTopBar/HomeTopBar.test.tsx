@@ -27,7 +27,9 @@ describe('HomeTopBar', () => {
     expect(onSortChange).toHaveBeenCalledWith('rating')
 
     await user.click(screen.getByLabelText('Отображение'))
-    expect(screen.getByRole('menu', { name: 'Отображение' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('menu', { name: 'Отображение' })
+    ).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Таблицей' }))
     expect(onViewChange).toHaveBeenCalledWith('table')

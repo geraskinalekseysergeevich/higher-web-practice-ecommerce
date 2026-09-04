@@ -1,6 +1,7 @@
 .root {
   display: grid;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .root[data-view='list'] {
@@ -24,6 +25,7 @@
   grid-template-columns: 5.5rem minmax(0, 1fr);
   align-items: center;
   gap: var(--space-3);
+  min-width: 0;
 }
 
 .image {
@@ -75,7 +77,11 @@
 }
 
 .root[data-view='list'] .name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-weight: var(--font-weight-bold);
+  white-space: nowrap;
 }
 
 .root[data-view='table'] .name {
@@ -102,7 +108,7 @@
 }
 
 .button {
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   padding-inline: 0;
 }
 

@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react'
+import { Provider } from 'react-redux'
 import { MemoryRouter } from 'react-router-dom'
 
+import { store } from '../../../../app/store'
 import type { Product } from '../../../../types'
 import { HomeCatalog } from './HomeCatalog'
 
@@ -29,18 +31,20 @@ const products: Product[] = [
 describe('HomeCatalog', () => {
   it('switches layout for list view', () => {
     render(
-      <MemoryRouter>
-        <HomeCatalog
-          currentPage={1}
-          isError={false}
-          isLoading={false}
-          onClearFilters={jest.fn()}
-          onPageChange={jest.fn()}
-          products={products}
-          totalPages={1}
-          view="list"
-        />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter>
+          <HomeCatalog
+            currentPage={1}
+            isError={false}
+            isLoading={false}
+            onClearFilters={jest.fn()}
+            onPageChange={jest.fn()}
+            products={products}
+            totalPages={1}
+            view="list"
+          />
+        </MemoryRouter>
+      </Provider>
     )
 
     expect(screen.getByTestId('home-catalog-grid')).toHaveAttribute(
