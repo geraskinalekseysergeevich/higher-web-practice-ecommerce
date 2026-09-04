@@ -18,3 +18,20 @@
   max-width: 60ch;
   color: var(--color-text-secondary);
 }
+
+.compact {
+  gap: var(--space-1);
+}
+
+.compact .title {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.compact .eyebrow {
+  font-size: var(--font-size-xs);
+}
+
+.compact .text {
+  font-size: var(--font-size-sm);
+}

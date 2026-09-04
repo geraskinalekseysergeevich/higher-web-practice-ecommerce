@@ -7,6 +7,7 @@ export type SectionHeadingProps = {
   description?: string
   eyebrow?: string
   className?: string
+  compact?: boolean
 }
 
 export const SectionHeading = ({
@@ -14,9 +15,10 @@ export const SectionHeading = ({
   description,
   eyebrow,
   title,
+  compact = false,
 }: SectionHeadingProps) => {
   return (
-    <header className={clsx(styles.root, className)}>
+    <header className={clsx(styles.root, compact && styles.compact, className)}>
       {eyebrow ? <div className={styles.eyebrow}>{eyebrow}</div> : null}
       <h2 className={styles.title}>{title}</h2>
       {description ? <p className={styles.text}>{description}</p> : null}

@@ -10,6 +10,11 @@ import type { CartLineItem } from '../../cart/lib/getCartLineItems'
 export type BuildOrderFromCheckoutArgs = {
   user: User
   lineItems: CartLineItem[]
+  customer?: {
+    firstName: string
+    lastName: string
+    email: string
+  }
   phone: string
   comment?: string
   paymentMethod: PaymentMethod
@@ -20,6 +25,7 @@ export type BuildOrderFromCheckoutArgs = {
 
 export const buildOrderFromCheckout = ({
   comment,
+  customer,
   deliveryAddress,
   deliveryMethod,
   lineItems,
@@ -34,32 +40,38 @@ export const buildOrderFromCheckout = ({
   const normalizedDeliveryMethod: DeliveryMethod =
     deliveryMethod === 'pickup' ? 'pickup_point' : 'courier'
 
-  const items = lineItems.map(({ image, name, productId, quantity, unitPrice }) => ({
-    image,
-    name,
-    price: unitPrice,
-    productId,
-    quantity,
-  }))
+  const normalizedPhone = phone.trim()
+  const items = lineItems.map(
+    ({ image, name, productId, quantity, unitPrice }) => ({
+      image,
+      name,
+      price: unitPrice,
+      productId,
+      quantity,
+    })
+  )
 
   return {
     id: orderId,
     number: orderNumber,
     userId: user.id,
-    status: 'pending',
+    status: paymentMethod === 'card_online' ? 'paid' : 'pending',
     items,
-    totalPrice: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    totalPrice: items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    ),
     paymentMethod,
     deliveryMethod: normalizedDeliveryMethod,
     deliveryAddress: deliveryMethod === 'courier' ? deliveryAddress : undefined,
     pickupPointId: deliveryMethod === 'pickup' ? pickupPointId : undefined,
     customer: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone,
+      firstName: customer?.firstName.trim() || user.firstName,
+      lastName: customer?.lastName.trim() || user.lastName,
+      email: customer?.email.trim().toLowerCase() || user.email,
+      phone: normalizedPhone,
     },
-    comment,
+    comment: comment?.trim() || undefined,
     createdAt,
   }
 }

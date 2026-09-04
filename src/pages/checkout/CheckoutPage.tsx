@@ -3,7 +3,10 @@ import type { SyntheticEvent } from 'react'
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useGetCartQuery, useRemoveFromCartMutation } from '../../app/api/cartApi'
+import {
+  useGetCartQuery,
+  useRemoveFromCartMutation,
+} from '../../app/api/cartApi'
 import { useCreateOrderMutation } from '../../app/api/ordersApi'
 import { useGetPickupPointsQuery } from '../../app/api/pickupPointsApi'
 import { useGetAllProductsQuery } from '../../app/api/productsApi'
@@ -16,7 +19,6 @@ import {
   EmptyState,
   Input,
   ListButton,
-  Radio,
   SectionHeading,
   SelectButton,
   Switch,
@@ -24,18 +26,49 @@ import {
 import { getCartLineItems } from '../../entities/cart/lib/getCartLineItems'
 import { getCartSummary } from '../../entities/cart/lib/getCartSummary'
 import { buildOrderFromCheckout } from '../../entities/order/lib/buildOrderFromCheckout'
+import {
+  type CheckoutFieldErrors,
+  getDeliveryEstimate,
+  validateCheckoutValues,
+} from '../../entities/order/lib/checkoutValidation'
 import styles from './CheckoutPage.module.css'
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
+
+const paymentOptions = [
+  { value: 'card_online' as const, label: 'Картой онлайн' },
+  { value: 'card_on_delivery' as const, label: 'Картой при получении' },
+  { value: 'cash' as const, label: 'Наличными при получении' },
+]
 
 export const CheckoutPage = () => {
   const navigate = useNavigate()
   const formRef = useRef<HTMLFormElement>(null)
   const authenticatedUser = useAppSelector(selectAuthenticatedUser)
-  const { data: user } = useGetUserByIdQuery(authenticatedUser?.id ?? skipToken)
-  const { data: cartItems = [] } = useGetCartQuery()
-  const { data: products = [] } = useGetAllProductsQuery()
-  const { data: pickupPoints = [] } = useGetPickupPointsQuery()
+  const {
+    data: user,
+    isError: isUserError,
+    isLoading: isUserLoading,
+    refetch: refetchUser,
+  } = useGetUserByIdQuery(authenticatedUser?.id ?? skipToken)
+  const {
+    data: cartItems = [],
+    isError: isCartError,
+    isLoading: isCartLoading,
+    refetch: refetchCart,
+  } = useGetCartQuery(authenticatedUser?.id ?? '')
+  const {
+    data: products = [],
+    isError: isProductsError,
+    isLoading: isProductsLoading,
+    refetch: refetchProducts,
+  } = useGetAllProductsQuery()
+  const {
+    data: pickupPoints = [],
+    isError: isPickupPointsError,
+    isLoading: isPickupPointsLoading,
+    refetch: refetchPickupPoints,
+  } = useGetPickupPointsQuery()
   const [createOrder, { isLoading: isCreatingOrder }] = useCreateOrderMutation()
   const [removeFromCart] = useRemoveFromCartMutation()
   const [deliveryMethod, setDeliveryMethod] = useState<'courier' | 'pickup'>(
@@ -45,7 +78,10 @@ export const CheckoutPage = () => {
     'card_online' | 'card_on_delivery' | 'cash'
   >('card_online')
   const [selectedPickupPointId, setSelectedPickupPointId] = useState('')
+  const [isPickupOpen, setIsPickupOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<CheckoutFieldErrors>({})
+  const [serverError, setServerError] = useState('')
 
   const lineItems = useMemo(
     () => getCartLineItems(cartItems, products),
@@ -58,7 +94,13 @@ export const CheckoutPage = () => {
   )
 
   const isEmptyCart = lineItems.length === 0
-  const checkoutDisabled = isEmptyCart || !user || isSubmitting || isCreatingOrder
+  const hasUnavailableItems = lineItems.some((item) => !item.inStock)
+  const checkoutDisabled =
+    isEmptyCart ||
+    hasUnavailableItems ||
+    !user ||
+    isSubmitting ||
+    isCreatingOrder
 
   const submitCheckout = async () => {
     if (!user || isEmptyCart) {
@@ -72,6 +114,26 @@ export const CheckoutPage = () => {
     }
 
     const formData = new FormData(form)
+    const validationErrors = validateCheckoutValues({
+      phone: String(formData.get('phone') ?? ''),
+      firstName: String(formData.get('firstName') ?? ''),
+      lastName: String(formData.get('lastName') ?? ''),
+      email: String(formData.get('email') ?? ''),
+      deliveryMethod,
+      country: String(formData.get('country') ?? ''),
+      city: String(formData.get('city') ?? ''),
+      street: String(formData.get('street') ?? ''),
+      house: String(formData.get('house') ?? ''),
+      pickupPointId: activePickupPointId,
+    })
+
+    setFieldErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) {
+      return
+    }
+
+    setServerError('')
     const paymentAddress =
       deliveryMethod === 'courier'
         ? {
@@ -90,6 +152,11 @@ export const CheckoutPage = () => {
       const order = buildOrderFromCheckout({
         user,
         lineItems,
+        customer: {
+          firstName: String(formData.get('firstName') ?? ''),
+          lastName: String(formData.get('lastName') ?? ''),
+          email: String(formData.get('email') ?? ''),
+        },
         phone: String(formData.get('phone') ?? user.phone ?? ''),
         comment: String(formData.get('comment') ?? '') || undefined,
         paymentMethod,
@@ -100,9 +167,19 @@ export const CheckoutPage = () => {
 
       const createdOrder = await createOrder(order).unwrap()
 
+      try {
+        await Promise.all(
+          cartItems.map((item) => removeFromCart(item.id).unwrap())
+        )
+      } catch {
+        setServerError(
+          'Заказ создан, но корзину не удалось очистить. Обновите страницу и удалите оставшиеся товары.'
+        )
+        return
+      }
       navigate(`/confirmation/${createdOrder.id}`)
-
-      void Promise.all(cartItems.map((item) => removeFromCart(item.id).unwrap()))
+    } catch {
+      setServerError('Не удалось оформить заказ. Попробуйте ещё раз.')
     } finally {
       setIsSubmitting(false)
     }
@@ -113,10 +190,58 @@ export const CheckoutPage = () => {
     void submitCheckout()
   }
 
+  if (isUserError || isCartError || isProductsError || isPickupPointsError) {
+    return (
+      <section className={styles.page}>
+        <p className={styles.serverError} role="alert">
+          Не удалось загрузить оформление заказа.
+        </p>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            if (isUserError) void refetchUser()
+            if (isCartError) void refetchCart()
+            if (isProductsError) void refetchProducts()
+            if (isPickupPointsError) void refetchPickupPoints()
+          }}
+        >
+          Повторить
+        </Button>
+      </section>
+    )
+  }
+
+  if (
+    isUserLoading ||
+    isCartLoading ||
+    isProductsLoading ||
+    isPickupPointsLoading
+  ) {
+    return (
+      <section className={styles.page}>
+        <p className={styles.loading}>Загружаем оформление заказа...</p>
+      </section>
+    )
+  }
+
   if (!user) {
     return (
       <section className={styles.page}>
         <p className={styles.loading}>Загружаем оформление заказа...</p>
+      </section>
+    )
+  }
+
+  if (isEmptyCart) {
+    return (
+      <section className={styles.page}>
+        <EmptyState
+          title="Корзина пуста"
+          description="Добавьте товары в корзину, чтобы оформить заказ."
+          actionLabel="Перейти в корзину"
+          onAction={() => navigate('/profile/cart')}
+        />
       </section>
     )
   }
@@ -131,116 +256,121 @@ export const CheckoutPage = () => {
       </header>
 
       <div className={styles.layout}>
-        <Card className={styles.formCard}>
-          <form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
-            <SectionHeading
-              eyebrow="Покупатель"
-              title="Контактные данные"
-              description="Данные можно взять из профиля пользователя."
-            />
-
-            <div className={styles.formGrid}>
-              <Input
-                label="Имя"
-                requiredMark
-                defaultValue={user.firstName}
-                name="firstName"
-                autoComplete="given-name"
-              />
-              <Input
-                label="Фамилия"
-                requiredMark
-                defaultValue={user.lastName}
-                name="lastName"
-                autoComplete="family-name"
-              />
-              <Input
-                label="Email"
-                requiredMark
-                defaultValue={user.email}
-                name="email"
-                autoComplete="email"
-              />
-              <Input
-                label="Телефон"
-                requiredMark
-                defaultValue={user.phone ?? ''}
-                name="phone"
-                autoComplete="tel"
-                placeholder="+7 999 123-45-67"
-              />
-            </div>
-
-            <label className={styles.commentField}>
-              <span className={styles.commentLabel}>Комментарий к заказу</span>
-              <textarea
-                className={styles.commentInput}
-                name="comment"
-                rows={4}
-              />
-            </label>
-
+        <div className={styles.formCard}>
+          {serverError ? (
+            <p className={styles.serverError} role="alert">
+              {serverError}
+            </p>
+          ) : null}
+          <form
+            id="checkout-form"
+            ref={formRef}
+            className={styles.form}
+            noValidate
+            onSubmit={handleSubmit}
+          >
             <section className={styles.section}>
-              <SectionHeading
-                eyebrow="Оплата"
-                title="Способ оплаты"
-                description="Выберите удобный вариант оплаты заказа."
-              />
+              <SectionHeading compact title="Способ оплаты" />
 
-              <div className={styles.options}>
-                <Radio
-                  label="Картой онлайн"
-                  name="paymentMethod"
-                  checked={paymentMethod === 'card_online'}
-                  onChange={() => setPaymentMethod('card_online')}
-                />
-                <Radio
-                  label="Картой при получении"
-                  name="paymentMethod"
-                  checked={paymentMethod === 'card_on_delivery'}
-                  onChange={() => setPaymentMethod('card_on_delivery')}
-                />
-                <Radio
-                  label="Наличными"
-                  name="paymentMethod"
-                  checked={paymentMethod === 'cash'}
-                  onChange={() => setPaymentMethod('cash')}
-                />
+              <div className={`${styles.options} ${styles.paymentOptions}`}>
+                <div className={styles.paymentTop}>
+                  {paymentOptions.slice(0, 2).map(({ value, label }) => (
+                    <label
+                      key={value}
+                      className={styles.choice}
+                      data-selected={paymentMethod === value}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={value}
+                        checked={paymentMethod === value}
+                        onChange={() => setPaymentMethod(value)}
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+                {paymentOptions.slice(2).map(({ value, label }) => (
+                  <label
+                    key={value}
+                    className={styles.choice}
+                    data-selected={paymentMethod === value}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value={value}
+                      checked={paymentMethod === value}
+                      onChange={() => setPaymentMethod(value)}
+                    />
+                    <span>{label}</span>
+                  </label>
+                ))}
               </div>
             </section>
 
             <section className={styles.section}>
-              <SectionHeading
-                eyebrow="Доставка"
-                title="Способ доставки"
-                description="Либо курьер, либо пункт выдачи."
-              />
+              <SectionHeading compact title="Способ доставки" />
 
               <div className={styles.options}>
-                <Radio
-                  label="Курьерская служба"
-                  name="deliveryMethod"
-                  checked={deliveryMethod === 'courier'}
-                  onChange={() => setDeliveryMethod('courier')}
-                />
-                <Radio
-                  label="Пункт выдачи"
-                  name="deliveryMethod"
-                  checked={deliveryMethod === 'pickup'}
-                  onChange={() => setDeliveryMethod('pickup')}
-                />
+                {[
+                  ['courier', 'Курьером'],
+                  ['pickup', 'В пункт выдачи'],
+                ].map(([value, label]) => (
+                  <label
+                    key={value}
+                    className={styles.choice}
+                    data-selected={deliveryMethod === value}
+                  >
+                    <input
+                      type="radio"
+                      name="deliveryMethod"
+                      value={value}
+                      checked={deliveryMethod === value}
+                      onChange={() =>
+                        setDeliveryMethod(value as 'courier' | 'pickup')
+                      }
+                    />
+                    <span>{label}</span>
+                  </label>
+                ))}
               </div>
 
               {deliveryMethod === 'courier' ? (
                 <div className={styles.deliveryGrid}>
                   <Input
                     label="Страна"
+                    requiredMark
                     defaultValue="Россия"
+                    error={fieldErrors.country}
                     name="country"
+                    required
                   />
-                  <Input label="Город" defaultValue="Москва" name="city" />
-                  <Input label="Улица" defaultValue="Тверская" name="street" />
-                  <Input label="Дом" defaultValue="7" name="house" />
+                  <Input
+                    label="Город"
+                    requiredMark
+                    defaultValue="Москва"
+                    error={fieldErrors.city}
+                    name="city"
+                    required
+                  />
+                  <Input
+                    label="Улица"
+                    requiredMark
+                    defaultValue="Тверская"
+                    error={fieldErrors.street}
+                    name="street"
+                    required
+                  />
+                  <Input
+                    label="Дом"
+                    requiredMark
+                    defaultValue="7"
+                    error={fieldErrors.house}
+                    name="house"
+                    required
+                  />
                   <Input label="Квартира" defaultValue="15" name="apartment" />
                   <Input
                     label="Индекс"
@@ -252,24 +382,91 @@ export const CheckoutPage = () => {
                 <div className={styles.pickup}>
                   <SelectButton
                     label={selectedPickupPoint?.name ?? 'Выберите пункт выдачи'}
-                    open={false}
+                    open={isPickupOpen}
+                    onClick={() => setIsPickupOpen((open) => !open)}
                   />
-                  <div className={styles.pickupList}>
-                    {pickupPoints.map((point) => (
-                      <ListButton
-                        key={point.id}
-                        label={`${point.name} · ${point.address}`}
-                        selected={point.id === activePickupPointId}
-                        onClick={() => setSelectedPickupPointId(point.id)}
-                      />
-                    ))}
-                  </div>
+                  {isPickupOpen ? (
+                    <div className={styles.pickupList}>
+                      {pickupPoints.map((point) => (
+                        <ListButton
+                          key={point.id}
+                          label={`${point.name} · ${point.address}`}
+                          selected={point.id === activePickupPointId}
+                          onClick={() => {
+                            setSelectedPickupPointId(point.id)
+                            setIsPickupOpen(false)
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                  {fieldErrors.pickupPointId ? (
+                    <p className={styles.fieldError} role="alert">
+                      {fieldErrors.pickupPointId}
+                    </p>
+                  ) : null}
                 </div>
               )}
+
+              <p className={styles.deliveryEstimate}>
+                Срок доставки: {getDeliveryEstimate(deliveryMethod)}
+              </p>
+            </section>
+
+            <section className={styles.section}>
+              <SectionHeading compact title="Контактные данные" />
+
+              <div className={styles.formGrid}>
+                <Input
+                  label="Имя"
+                  requiredMark
+                  defaultValue={user.firstName}
+                  error={fieldErrors.firstName}
+                  name="firstName"
+                  autoComplete="given-name"
+                />
+                <Input
+                  label="Фамилия"
+                  requiredMark
+                  defaultValue={user.lastName}
+                  error={fieldErrors.lastName}
+                  name="lastName"
+                  autoComplete="family-name"
+                />
+                <Input
+                  label="Email"
+                  requiredMark
+                  defaultValue={user.email}
+                  error={fieldErrors.email}
+                  name="email"
+                  autoComplete="email"
+                />
+                <Input
+                  label="Телефон"
+                  requiredMark
+                  defaultValue={user.phone ?? ''}
+                  error={fieldErrors.phone}
+                  name="phone"
+                  autoComplete="tel"
+                  placeholder="+7 999 123-45-67"
+                  required
+                />
+              </div>
+
+              <label className={styles.commentField}>
+                <span className={styles.commentLabel}>
+                  Комментарий к заказу
+                </span>
+                <textarea
+                  className={styles.commentInput}
+                  name="comment"
+                  rows={4}
+                />
+              </label>
             </section>
 
             <div className={styles.switchRow}>
-              <Switch label="Получать уведомления на email" checked readOnly />
+              <Switch label="Получать уведомления на email" defaultChecked />
             </div>
 
             <Button
@@ -282,14 +479,13 @@ export const CheckoutPage = () => {
               Подтвердить заказ
             </Button>
           </form>
-        </Card>
+        </div>
 
         <Card className={styles.summaryCard}>
-          <SectionHeading
-            eyebrow="Сводка"
-            title="Заказ"
-            description="Показываем содержимое корзины и итоговую стоимость."
-          />
+          <SectionHeading compact title="Ваш заказ" />
+          <span className={styles.summaryCount}>
+            {summary.totalItems} товара
+          </span>
 
           {isEmptyCart ? (
             <EmptyState
@@ -303,11 +499,19 @@ export const CheckoutPage = () => {
               <div className={styles.summaryItems}>
                 {lineItems.map((item) => (
                   <article key={item.id} className={styles.summaryItem}>
-                    <img className={styles.summaryImage} src={item.image} alt="" />
+                    <img
+                      className={styles.summaryImage}
+                      src={item.image || '/product-placeholder.svg'}
+                      alt=""
+                      onError={(event) => {
+                        event.currentTarget.src = '/product-placeholder.svg'
+                      }}
+                    />
                     <div className={styles.summaryInfo}>
                       <span className={styles.summaryName}>{item.name}</span>
                       <span className={styles.summaryMeta}>
-                        {item.quantity} x {priceFormatter.format(item.unitPrice)} ₽
+                        {item.quantity} x{' '}
+                        {priceFormatter.format(item.unitPrice)} ₽
                       </span>
                     </div>
                   </article>
@@ -316,18 +520,39 @@ export const CheckoutPage = () => {
 
               <dl className={styles.totals}>
                 <div className={styles.totalRow}>
-                  <dt className={styles.totalTerm}>Товаров</dt>
-                  <dd className={styles.totalValue}>{summary.totalItems}</dd>
+                  <dt className={styles.totalTerm}>Сумма заказа</dt>
+                  <dd className={styles.totalValue}>
+                    {priceFormatter.format(summary.totalPrice)} ₽
+                  </dd>
                 </div>
                 <div className={styles.totalRow}>
-                  <dt className={styles.totalTerm}>Сумма</dt>
+                  <dt className={styles.totalTerm}>Стоимость доставки</dt>
+                  <dd className={styles.totalValue}>бесплатно</dd>
+                </div>
+                <div className={styles.totalRow}>
+                  <dt className={styles.totalTerm}>Итого</dt>
                   <dd className={styles.totalValue}>
                     {priceFormatter.format(summary.totalPrice)} ₽
                   </dd>
                 </div>
               </dl>
+              <Button
+                className={styles.summarySubmit}
+                type="submit"
+                form="checkout-form"
+                fullWidth
+                disabled={checkoutDisabled}
+              >
+                Оплатить
+              </Button>
             </div>
           )}
+
+          {hasUnavailableItems ? (
+            <p className={styles.serverError} role="alert">
+              В заказе есть недоступные товары. Удалите их из корзины.
+            </p>
+          ) : null}
         </Card>
       </div>
     </section>

@@ -1,10 +1,10 @@
 .page {
+  position: relative;
   display: grid;
   gap: var(--space-4);
-  padding:
-    clamp(var(--space-4), 2.5vw, var(--space-6))
-    clamp(var(--space-4), 6vw, 6.5rem)
-    clamp(var(--space-5), 3vw, var(--space-8));
+  width: min(calc(100% - 2.5rem), 61.25rem);
+  margin: 0 auto;
+  padding: 2.5rem 0 var(--space-8);
 }
 
 .loading {
@@ -31,14 +31,42 @@
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22rem;
+  grid-template-columns: 36.25rem 23.75rem;
   gap: var(--space-5);
   align-items: start;
 }
 
+.page::after {
+  position: absolute;
+  top: 27rem;
+  right: 0;
+  width: 23.75rem;
+  height: 19.25rem;
+  background: url('../../assets/checkout-illustration.svg') center / contain
+    no-repeat;
+  content: '';
+  pointer-events: none;
+}
+
 .formCard,
 .summaryCard {
-  padding: var(--space-5);
+  padding: var(--space-4);
+}
+
+.formCard {
+  display: grid;
+  gap: var(--space-4);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.serverError,
+.fieldError {
+  margin: 0;
+  color: var(--color-accent-danger);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }
 
 .form {
@@ -55,6 +83,10 @@
 .section {
   display: grid;
   gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-card);
 }
 
 .commentField {
@@ -81,7 +113,49 @@
 
 .options {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
+}
+
+.paymentOptions {
+  grid-template-columns: 1fr;
+}
+
+.paymentTop {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.paymentTop .choice {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.paymentOptions > .choice {
+  width: 100%;
+}
+
+.choice {
+  position: relative;
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-1);
+  border: 1px solid var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.choice[data-selected='true'] {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-secondary);
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
 }
 
 .deliveryGrid {
@@ -100,6 +174,12 @@
   gap: var(--space-1);
 }
 
+.deliveryEstimate {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
 .switchRow {
   display: flex;
   justify-content: flex-start;
@@ -109,9 +189,20 @@
   margin-top: var(--space-2);
 }
 
+.summarySubmit {
+  min-height: 2.5rem;
+}
+
 .summary {
   display: grid;
   gap: var(--space-4);
+}
+
+.summaryCount {
+  align-self: end;
+  margin-top: -2.25rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
 }
 
 .summaryItems {
@@ -121,14 +212,14 @@
 
 .summaryItem {
   display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr);
+  grid-template-columns: 5rem minmax(0, 1fr);
   gap: var(--space-3);
   align-items: center;
 }
 
 .summaryImage {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 5rem;
+  height: 5rem;
   object-fit: contain;
 }
 
@@ -175,10 +266,19 @@
   .layout {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .page::after {
+    display: none;
+  }
+}
+
+.section:nth-child(2) .options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 @media (max-width: 40rem) {
   .page {
+    width: 100%;
     padding-inline: var(--space-4);
   }
 
@@ -187,8 +287,27 @@
     padding: var(--space-4);
   }
 
+  .formCard {
+    padding: 0;
+  }
+
   .formGrid,
-  .deliveryGrid {
+  .deliveryGrid,
+  .options {
     grid-template-columns: 1fr;
+  }
+
+  .paymentTop {
+    flex-direction: column;
+  }
+
+  .paymentTop .choice {
+    width: 100%;
+  }
+}
+
+@media (min-width: 40.0625rem) {
+  .header {
+    display: none;
   }
 }
