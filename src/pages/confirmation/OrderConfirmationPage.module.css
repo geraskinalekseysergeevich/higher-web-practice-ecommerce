@@ -1,10 +1,9 @@
 .page {
   display: grid;
-  gap: var(--space-4);
-  padding:
-    clamp(var(--space-4), 2.5vw, var(--space-6))
-    clamp(var(--space-4), 6vw, 6.5rem)
-    clamp(var(--space-5), 3vw, var(--space-8));
+  gap: var(--space-6);
+  width: min(calc(100% - 2.5rem), 48.75rem);
+  margin: 0 auto;
+  padding: 2.5rem 0 var(--space-8);
 }
 
 .loading {
@@ -13,179 +12,234 @@
 
 .header {
   display: grid;
-  gap: 0.25rem;
-}
-
-.eyebrow {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-base);
+  gap: var(--space-2);
 }
 
 .title {
   margin: 0;
-  font-size: clamp(2rem, 3vw, 2.75rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-family: var(--font-family-heading);
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .subtitle {
   margin: 0;
-  color: var(--color-text-secondary);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25rem;
 }
 
-.layout {
+.summaryCard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 24rem;
   gap: var(--space-5);
-  align-items: start;
+  padding: var(--space-6);
+  box-shadow: 0 0.25rem 0.25rem var(--color-bg-shadows);
 }
 
-.summaryCard,
-.itemsCard {
-  padding: var(--space-5);
-}
-
-.summaryTop {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
+.recipient,
+.delivery,
+.itemsList,
+.totalRow {
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--color-border-default);
 }
 
-.summaryLabel {
-  display: block;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+.blockTitle {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
 }
 
-.summaryValue {
-  display: block;
-  margin-top: 0.125rem;
-  font-weight: var(--font-weight-bold);
-}
-
-.blocks {
+.recipientLine,
+.delivery {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-4);
-  padding-top: var(--space-4);
+}
+
+.recipientLine {
+  display: flex;
+  align-items: baseline;
+}
+
+.recipientLine {
+  margin-bottom: var(--space-2);
+}
+
+.delivery {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .block {
   display: grid;
-  gap: 0.25rem;
-}
-
-.blockTitle,
-.itemsTitle {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: var(--font-weight-bold);
+  gap: var(--space-1);
 }
 
 .blockText {
   margin: 0;
   color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }
 
-.itemsTitle {
-  margin-bottom: var(--space-4);
+.delivery .blockText {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.recipientLine .blockText:first-child {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.recipient > .blockText {
+  color: var(--color-text-primary);
+}
+
+.summaryLabel {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
 }
 
 .itemsList {
   display: grid;
-  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
 }
 
 .item {
   display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr) auto;
-  gap: var(--space-3);
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: var(--space-2);
   align-items: center;
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--color-border-default);
+  color: inherit;
+  text-decoration: none;
 }
 
 .itemImage {
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   object-fit: contain;
 }
 
 .itemInfo {
   display: grid;
-  gap: 0.125rem;
+  gap: var(--space-1);
 }
 
 .itemName {
-  font-weight: var(--font-weight-bold);
+  color: var(--color-link);
 }
 
 .itemMeta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
   color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
 }
 
-.itemTotal {
-  font-weight: var(--font-weight-bold);
-  white-space: nowrap;
+.itemPrice {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-heading);
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+}
+
+.totalRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.totalBlock,
+.paymentBlock {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.paymentBlock {
+  min-width: 11.4375rem;
+}
+
+.summaryValue {
+  font-family: var(--font-family-heading);
+  font-size: 1.75rem;
+  line-height: 2rem;
+}
+
+.paymentValue {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
 }
 
 .actions {
   display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.secondaryAction,
-.primaryAction {
+.primaryAction,
+.secondaryAction {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.75rem;
-  padding-inline: var(--space-4);
-  border-radius: var(--radius-lg);
-  text-decoration: none;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
-}
-
-.secondaryAction {
-  border: 1px solid var(--color-accent-primary);
-  color: var(--color-accent-primary);
-  background: var(--color-bg-primary);
+  text-decoration: none;
 }
 
 .primaryAction {
+  border: 0;
   background: var(--color-accent-primary);
   color: var(--color-text-inverse);
+  cursor: pointer;
 }
 
-@media (max-width: 64rem) {
-  .layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.secondaryAction {
+  color: var(--color-link);
+  font-weight: var(--font-weight-regular);
 }
 
 @media (max-width: 40rem) {
   .page {
-    padding-inline: var(--space-4);
+    width: 100%;
+    padding: var(--space-5) var(--space-4) 0;
   }
 
-  .summaryCard,
-  .itemsCard {
-    padding: var(--space-4);
+  .recipientLine,
+  .delivery {
+    grid-template-columns: 1fr;
   }
 
-  .summaryTop,
+  .recipientLine {
+    display: grid;
+  }
+
+  .itemsList {
+    grid-template-columns: 1fr;
+  }
+
   .actions {
+    align-items: stretch;
     flex-direction: column;
+    gap: var(--space-2);
   }
 
-  .item {
-    grid-template-columns: 4rem minmax(0, 1fr);
-  }
-
-  .itemTotal {
-    grid-column: 1 / -1;
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
   }
 }

@@ -11,7 +11,7 @@ const orderStatusLabels: Record<OrderStatus, string> = {
   paid: 'Оплачен',
   processing: 'В обработке',
   shipped: 'Отправлен',
-  delivered: 'Доставлен',
+  delivered: 'Получен',
   cancelled: 'Отменён',
 }
 
