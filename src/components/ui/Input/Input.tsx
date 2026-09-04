@@ -17,12 +17,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const errorId = error ? `${inputId}-error` : undefined
 
     return (
-      <label className={styles.root} htmlFor={inputId}>
+      <div className={styles.root}>
         {label ? (
-          <span className={styles.label}>
+          <label className={styles.label} htmlFor={inputId}>
             {label}
             {requiredMark ? <span className={styles.required}>*</span> : null}
-          </span>
+          </label>
         ) : null}
 
         <input
@@ -39,7 +39,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {error}
           </span>
         ) : null}
-      </label>
+      </div>
     )
   }
 )

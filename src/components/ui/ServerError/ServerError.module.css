@@ -17,3 +17,14 @@
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
 }
+
+.retry {
+  width: fit-content;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}

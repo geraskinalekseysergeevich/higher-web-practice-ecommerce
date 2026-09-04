@@ -8,18 +8,19 @@ export type SwitchProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'type'
 > & {
+  appearance?: 'switch' | 'radio'
   label?: string
   error?: string
 }
 
 export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
-  ({ className, error, id, label, ...props }, ref) => {
+  ({ appearance = 'switch', className, error, id, label, ...props }, ref) => {
     const generatedId = useId()
     const switchId = id ?? generatedId
     const errorId = error ? `${switchId}-error` : undefined
 
     return (
-      <div className={clsx(styles.root, className)}>
+      <div className={clsx(styles.root, styles[appearance], className)}>
         <label className={styles.field} htmlFor={switchId}>
           <span className={styles.control}>
             <input

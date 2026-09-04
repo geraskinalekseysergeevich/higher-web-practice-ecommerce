@@ -5,6 +5,7 @@ import styles from './FormField.module.css'
 
 export type FormFieldProps = PropsWithChildren<{
   label: string
+  id?: string
   requiredMark?: boolean
   error?: string
   className?: string
@@ -14,23 +15,18 @@ export const FormField = ({
   children,
   className,
   error,
+  id,
   label,
   requiredMark = false,
 }: FormFieldProps) => {
   return (
-    <label className={clsx(styles.root, className)}>
-      <span className={styles.label}>
+    <div className={clsx(styles.root, className)} data-invalid={Boolean(error)}>
+      <label className={styles.label} htmlFor={id}>
         {label}
         {requiredMark ? <span className={styles.required}>*</span> : null}
-      </span>
+      </label>
 
       {children}
-
-      {error ? (
-        <span className={styles.error} role="alert">
-          {error}
-        </span>
-      ) : null}
-    </label>
+    </div>
   )
 }
