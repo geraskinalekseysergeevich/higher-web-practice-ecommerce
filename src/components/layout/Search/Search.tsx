@@ -1,32 +1,81 @@
 import clsx from 'clsx'
-import type { SyntheticEvent } from 'react'
+import type {
+  ChangeEventHandler,
+  FormEventHandler,
+  KeyboardEventHandler,
+} from 'react'
+import { useId, useState } from 'react'
 
 import { SearchIcon } from '../../ui'
 import styles from './Search.module.css'
 
 type SearchProps = {
   className?: string
-  onSubmit?: (event: SyntheticEvent<HTMLFormElement>) => void
+  compact?: boolean
+  defaultValue?: string
+  onChange?: ChangeEventHandler<HTMLInputElement>
+  onClear?: () => void
+  onSubmit?: FormEventHandler<HTMLFormElement>
 }
 
-export const Search = ({ className, onSubmit }: SearchProps) => (
-  <form
-    className={clsx(styles.root, className)}
-    role="search"
-    onSubmit={onSubmit ?? ((event) => event.preventDefault())}
-  >
-    <label className={styles.srOnly} htmlFor="header-search">
-      Искать
-    </label>
-    <input
-      className={styles.input}
-      id="header-search"
-      name="search"
-      placeholder="Искать"
-      type="search"
-    />
-    <button className={styles.button} type="submit" aria-label="Найти">
-      <SearchIcon className={styles.icon} />
-    </button>
-  </form>
-)
+export const Search = ({
+  className,
+  compact = false,
+  defaultValue,
+  onChange,
+  onClear,
+  onSubmit,
+}: SearchProps) => {
+  const inputId = useId()
+  const [value, setValue] = useState(defaultValue ?? '')
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.key === 'Enter' && compact) {
+      event.preventDefault()
+      event.currentTarget.form?.requestSubmit()
+    }
+  }
+
+  return (
+    <form
+      className={clsx(styles.root, compact && styles.compact, className)}
+      role="search"
+      onSubmit={onSubmit ?? ((event) => event.preventDefault())}
+    >
+      {compact ? <SearchIcon className={styles.compactIcon} /> : null}
+      <label className={styles.srOnly} htmlFor={inputId}>
+        Искать
+      </label>
+      <input
+        className={styles.input}
+        value={value}
+        id={inputId}
+        name="search"
+        onChange={(event) => {
+          setValue(event.currentTarget.value)
+          onChange?.(event)
+        }}
+        onKeyDown={handleKeyDown}
+        placeholder="Искать"
+        type="search"
+      />
+      {value ? (
+        <button
+          className={styles.clear}
+          type="button"
+          aria-label="Очистить поиск"
+          onClick={() => {
+            setValue('')
+            onClear?.()
+          }}
+        >
+          ×
+        </button>
+      ) : null}
+      {compact ? null : (
+        <button className={styles.button} type="submit" aria-label="Найти">
+          <SearchIcon className={styles.icon} />
+        </button>
+      )}
+    </form>
+  )
+}
