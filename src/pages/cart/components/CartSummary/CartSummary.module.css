@@ -1,7 +1,19 @@
 .root {
-  padding: var(--space-5);
+  padding: var(--space-4);
   gap: var(--space-4);
   align-self: start;
+}
+
+.root button {
+  height: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
 .title {
@@ -11,28 +23,44 @@
   line-height: 1.2;
 }
 
-.totals {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.term,
-.value {
-  margin: 0;
-}
-
-.term {
+.count {
   color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
 }
 
-.value {
+.total {
+  margin: 0;
+  color: var(--color-accent-success);
+  font-family: var(--font-family-heading);
+  font-size: 1.75rem;
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
+  line-height: 1.15;
+}
+
+@media (max-width: 40rem) {
+  .root {
+    position: fixed;
+    right: 0;
+    bottom: 3.625rem;
+    left: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .heading {
+    display: none;
+  }
+
+  .total {
+    font-size: 1.25rem;
+  }
+
+  .root button {
+    height: 2.25rem;
+    min-height: 2.25rem;
+  }
 }

@@ -1,0 +1,6 @@
+<svg width="320" height="240" viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="240" rx="16" fill="#F3F4F6"/>
+  <path d="M74 125C98 93 124 94 160 123C196 94 222 93 246 125C220 163 190 169 160 143C130 169 100 163 74 125Z" fill="#9CA3AF"/>
+  <path d="M150 123H170" stroke="#6B7280" stroke-width="8" stroke-linecap="round"/>
+  <text x="160" y="204" text-anchor="middle" fill="#6B7280" font-family="sans-serif" font-size="14">Изображение недоступно</text>
+</svg>

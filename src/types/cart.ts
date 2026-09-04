@@ -1,5 +1,6 @@
 export type CartItem = {
   id: string
+  userId: string
   productId: string
   quantity: number
 }
@@ -11,6 +12,7 @@ export type Cart = {
 }
 
 export type AddToCartPayload = {
+  userId: string
   productId: string
   quantity?: number
 }

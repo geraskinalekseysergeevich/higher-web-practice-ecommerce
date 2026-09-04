@@ -5,6 +5,7 @@ type CartSummaryProps = {
   totalItems: number
   totalPrice: number
   onCheckout: () => void
+  checkoutDisabled?: boolean
 }
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
@@ -13,24 +14,23 @@ export const CartSummary = ({
   totalItems,
   totalPrice,
   onCheckout,
+  checkoutDisabled = false,
 }: CartSummaryProps) => (
   <Card className={styles.root}>
-    <h2 className={styles.title}>Итого</h2>
+    <div className={styles.heading}>
+      <h2 className={styles.title}>Ваша корзина</h2>
+      <span className={styles.count}>{totalItems} товара</span>
+    </div>
 
-    <dl className={styles.totals}>
-      <div className={styles.row}>
-        <dt className={styles.term}>Товаров</dt>
-        <dd className={styles.value}>{totalItems}</dd>
-      </div>
-      <div className={styles.row}>
-        <dt className={styles.term}>Сумма</dt>
-        <dd className={styles.value}>
-          {priceFormatter.format(totalPrice)} ₽
-        </dd>
-      </div>
-    </dl>
+    <p className={styles.total}>{priceFormatter.format(totalPrice)} ₽</p>
 
-    <Button fullWidth size="lg" type="button" onClick={onCheckout}>
+    <Button
+      fullWidth
+      size="lg"
+      type="button"
+      disabled={checkoutDisabled}
+      onClick={onCheckout}
+    >
       Оформить заказ
     </Button>
   </Card>

@@ -2,22 +2,28 @@ import type { CartItem } from '../../types'
 import { emptySplitApi } from './baseApi'
 import { apiResources, createListTag } from './common/tags'
 import type { ApiBuilder, CartBody, CartItemBody } from './common/types'
+import { parseCart, parseCartResponse } from './common/validation'
 
 const CART_URL = apiResources.cart
 
 const getCartEndpoint = (builder: ApiBuilder) =>
-  builder.query<CartItem[], void>({
-    query: () => CART_URL,
+  builder.query<CartItem[], string>({
+    query: (userId) => ({
+      url: CART_URL,
+      params: { userId },
+    }),
+    transformResponse: parseCart,
     providesTags: [createListTag(apiResources.cart)],
   })
 
 const addToCartEndpoint = (builder: ApiBuilder) =>
   builder.mutation<CartItem, CartBody>({
-    query: ({ productId, quantity = 1 }) => ({
+    query: ({ userId, productId, quantity = 1 }) => ({
       url: CART_URL,
       method: 'POST',
-      body: { productId, quantity },
+      body: { userId, productId, quantity },
     }),
+    transformResponse: parseCartResponse,
     invalidatesTags: [createListTag(apiResources.cart)],
   })
 
@@ -28,6 +34,7 @@ const updateCartItemEndpoint = (builder: ApiBuilder) =>
       method: 'PATCH',
       body: { quantity },
     }),
+    transformResponse: parseCartResponse,
     invalidatesTags: [createListTag(apiResources.cart)],
   })
 

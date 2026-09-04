@@ -1,10 +1,7 @@
 .page {
   display: grid;
   gap: var(--space-4);
-  padding:
-    clamp(var(--space-4), 2.5vw, var(--space-6))
-    clamp(var(--space-4), 6vw, 6.5rem)
-    clamp(var(--space-5), 3vw, var(--space-8));
+  width: 100%;
 }
 
 .loading {
@@ -18,42 +15,38 @@
 }
 
 .title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
   margin: 0;
-  font-size: clamp(2rem, 3vw, 2.75rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
 }
 
 .subtitle {
   margin: 0;
   color: var(--color-text-secondary);
   font-size: var(--font-size-base);
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
 }
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22rem;
+  grid-template-columns: minmax(0, 1fr) 17.5rem;
   gap: var(--space-5);
   align-items: start;
 }
 
-.itemsCard {
-  padding: 0 var(--space-5);
-}
-
 .itemsList {
   display: grid;
-}
-
-.noteCard {
-  padding: var(--space-5);
   gap: var(--space-4);
 }
 
-.note {
-  margin: 0;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
+.itemCard {
+  padding: 0 var(--space-4);
 }
 
 @media (max-width: 64rem) {
@@ -63,12 +56,19 @@
 }
 
 @media (max-width: 40rem) {
-  .page {
-    padding-inline: var(--space-4);
+  .itemCard {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
-  .itemsCard,
-  .noteCard {
-    padding: var(--space-4);
+  .title {
+    gap: var(--space-2);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
   }
 }
