@@ -18,6 +18,7 @@ import { ProfileEditPage } from '../pages/profile/ProfileEditPage'
 import { ProfileLayout } from '../pages/profile/ProfileLayout'
 import { ProfilePage } from '../pages/profile/ProfilePage'
 import { RequireAuth } from './router/RequireAuth'
+import { RequireGuest } from './router/RequireGuest'
 
 const routes: RouteObject[] = [
   {
@@ -49,8 +50,13 @@ const routes: RouteObject[] = [
   {
     element: <AuthLayout />,
     children: [
-      { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> },
+      {
+        element: <RequireGuest />,
+        children: [
+          { path: '/login', element: <LoginPage /> },
+          { path: '/register', element: <RegisterPage /> },
+        ],
+      },
     ],
   },
 ]

@@ -1,12 +1,23 @@
 import { type ChangeEvent, type FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { useGetUsersQuery } from '../../app/api/usersApi'
-import { saveAuthenticatedUser,setAuthenticatedUser } from '../../app/auth/authSlice'
+import { useLazyFindUserByEmailQuery } from '../../app/api/usersApi'
+import {
+  saveAuthenticatedUser,
+  setAuthenticatedUser,
+} from '../../app/auth/authSlice'
 import { useAppDispatch } from '../../app/hooks'
-import { Button, Form, FormField, Input,ServerError } from '../../components/ui'
+import {
+  ArrowIcon,
+  Button,
+  Form,
+  FormField,
+  Input,
+  ServerError,
+} from '../../components/ui'
 import {
   authenticateUser,
+  normalizeEmail,
   validateLoginPayload,
 } from '../../entities/user/lib/auth'
 import styles from './LoginPage.module.css'
@@ -23,13 +34,16 @@ const initialValues: LoginValues = {
 
 export const LoginPage = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const dispatch = useAppDispatch()
-  const { data: users = [], isLoading } = useGetUsersQuery()
+  const [findUserByEmail, { isError, isFetching }] =
+    useLazyFindUserByEmailQuery()
   const [values, setValues] = useState<LoginValues>(initialValues)
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof LoginValues, string>>
   >({})
   const [serverError, setServerError] = useState('')
+  const [recoveryMessage, setRecoveryMessage] = useState('')
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -44,15 +58,27 @@ export const LoginPage = () => {
       [name]: undefined,
     }))
     setServerError('')
+    setRecoveryMessage('')
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const nextFieldErrors = validateLoginPayload(values)
     setFieldErrors(nextFieldErrors)
 
     if (Object.keys(nextFieldErrors).length > 0) {
+      return
+    }
+
+    let users
+
+    try {
+      users = await findUserByEmail({
+        email: normalizeEmail(values.email),
+      }).unwrap()
+    } catch {
+      setServerError('Не удалось выполнить вход. Попробуйте ещё раз.')
       return
     }
 
@@ -65,14 +91,24 @@ export const LoginPage = () => {
 
     dispatch(setAuthenticatedUser(result.user))
     saveAuthenticatedUser(result.user)
-    navigate('/', { replace: true })
+
+    const from = location.state?.from as
+      | { pathname?: string; search?: string; hash?: string }
+      | undefined
+    const returnTo = from?.pathname?.startsWith('/')
+      ? `${from.pathname}${from.search ?? ''}${from.hash ?? ''}`
+      : '/'
+
+    navigate(returnTo, { replace: true })
   }
 
   return (
     <Form
       className={styles.card}
       title="Вход в аккаунт"
+      titleAdornment={<ArrowIcon className={styles.backIcon} />}
       onSubmit={handleSubmit}
+      noValidate
       footer={
         <div className={styles.footer}>
           <span className={styles.footerText}>У вас ещё нет аккаунта?</span>
@@ -82,38 +118,78 @@ export const LoginPage = () => {
         </div>
       }
     >
-      {serverError ? (
-        <ServerError className={styles.serverError} message={serverError} />
-      ) : null}
+      <div className={styles.fields}>
+        {serverError ? (
+          <ServerError className={styles.serverError} message={serverError} />
+        ) : null}
+        {isError ? (
+          <ServerError
+            className={styles.serverError}
+            message="Не удалось загрузить данные для входа."
+            onRetry={() =>
+              void findUserByEmail({ email: normalizeEmail(values.email) })
+            }
+          />
+        ) : null}
+        {location.state?.message ? (
+          <p className={styles.successMessage} role="status">
+            {location.state.message}
+          </p>
+        ) : null}
+        {recoveryMessage ? (
+          <p className={styles.successMessage} role="status">
+            {recoveryMessage}
+          </p>
+        ) : null}
 
-      <FormField label="Email" requiredMark error={fieldErrors.email}>
-        <Input
-          autoComplete="email"
-          name="email"
-          onChange={handleChange}
-          placeholder="ivanov@yandex.ru"
-          value={values.email}
-        />
-      </FormField>
+        <FormField
+          id="login-email"
+          label="Ваш email"
+          requiredMark
+          error={fieldErrors.email}
+        >
+          <Input
+            autoComplete="email"
+            name="email"
+            id="login-email"
+            error={fieldErrors.email}
+            required
+            onChange={handleChange}
+            placeholder="ivanov@yandex.ru"
+            value={values.email}
+          />
+        </FormField>
 
-      <FormField label="Пароль" requiredMark error={fieldErrors.password}>
-        <Input
-          autoComplete="current-password"
-          name="password"
-          onChange={handleChange}
-          placeholder="*******"
-          type="password"
-          value={values.password}
-        />
-      </FormField>
-
-      <div className={styles.recovery}>
-        <button className={styles.recoveryLink} type="button">
-          Забыли пароль?
-        </button>
+        <FormField
+          id="login-password"
+          label="Пароль"
+          requiredMark
+          error={fieldErrors.password}
+        >
+          <Input
+            autoComplete="current-password"
+            name="password"
+            id="login-password"
+            error={fieldErrors.password}
+            required
+            onChange={handleChange}
+            placeholder="*******"
+            type="password"
+            value={values.password}
+          />
+          <div className={styles.recovery}>
+            <button
+              className={styles.recoveryLink}
+              type="button"
+              onClick={() => setRecoveryMessage('Функция пока недоступна')}
+            >
+              Забыли пароль?
+            </button>
+          </div>
+        </FormField>
       </div>
 
-      <Button disabled={isLoading} type="submit" fullWidth size="lg">
+      <Button disabled={isFetching} type="submit" fullWidth size="lg">
         Войти
       </Button>
     </Form>

@@ -129,7 +129,7 @@ type LoginResult =
     }
 
 export const registerUser = (
-  users: StoredUser[],
+  users: Array<Pick<User, 'email'>>,
   payload: RegisterPayload,
   options: BuildRegisteredUserOptions = {}
 ): RegisterResult => {

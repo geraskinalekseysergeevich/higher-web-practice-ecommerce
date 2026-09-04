@@ -17,6 +17,7 @@ const renderWithStore = (
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/" element={<div>home</div>} />
+          <Route path="/login" element={<div>login</div>} />
           <Route element={<RequireAuth />}>
             <Route path="/profile" element={<div>profile</div>} />
           </Route>
@@ -26,10 +27,11 @@ const renderWithStore = (
   )
 
 describe('RequireAuth', () => {
-  it('redirects unauthenticated user to home', () => {
+  it('redirects unauthenticated user to login', () => {
     renderWithStore('/profile')
 
-    expect(screen.getByText('home')).toBeInTheDocument()
+    expect(screen.getByText('login')).toBeInTheDocument()
+    expect(screen.queryByText('home')).not.toBeInTheDocument()
     expect(screen.queryByText('profile')).not.toBeInTheDocument()
   })
 

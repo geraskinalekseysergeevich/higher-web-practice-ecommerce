@@ -1,6 +1,5 @@
 import type {
   AddToCartPayload,
-  LoginPayload,
   Order,
   ProductRating,
   ProductSort,
@@ -35,7 +34,9 @@ export type OrdersQueryArgs = {
 
 export type CreateUserBody = RegisterPayload
 
-export type UsersCredentials = LoginPayload
+export type UserEmailQuery = {
+  email: string
+}
 
 export type UpdateUserBody = {
   userId: string

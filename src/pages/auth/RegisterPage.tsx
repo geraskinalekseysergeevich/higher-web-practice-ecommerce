@@ -2,8 +2,18 @@ import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useCreateUserMutation, useGetUsersQuery } from '../../app/api/usersApi'
-import { Button, Form, FormField, Input,ServerError } from '../../components/ui'
-import { hasDuplicateUser, registerUser, validateRegisterPayload } from '../../entities/user/lib/auth'
+import {
+  ArrowIcon,
+  Button,
+  Form,
+  FormField,
+  Input,
+  ServerError,
+} from '../../components/ui'
+import {
+  registerUser,
+  validateRegisterPayload,
+} from '../../entities/user/lib/auth'
 import styles from './RegisterPage.module.css'
 
 type RegisterValues = {
@@ -24,7 +34,7 @@ const initialValues: RegisterValues = {
 
 export const RegisterPage = () => {
   const navigate = useNavigate()
-  const { data: users = [], isLoading } = useGetUsersQuery()
+  const { data: users = [], isError, isLoading, refetch } = useGetUsersQuery()
   const [createUser, { isLoading: isSaving }] = useCreateUserMutation()
   const [values, setValues] = useState<RegisterValues>(initialValues)
   const [fieldErrors, setFieldErrors] = useState<
@@ -57,6 +67,10 @@ export const RegisterPage = () => {
       return
     }
 
+    if (isError) {
+      return
+    }
+
     const registration = registerUser(users, values)
 
     if ('error' in registration) {
@@ -64,14 +78,12 @@ export const RegisterPage = () => {
       return
     }
 
-    if (hasDuplicateUser(users, values.email)) {
-      setServerError('Пользователь с таким email уже существует')
-      return
-    }
-
     try {
       await createUser(values).unwrap()
-      navigate('/login', { replace: true })
+      navigate('/login', {
+        replace: true,
+        state: { message: 'Регистрация завершена. Войдите в аккаунт.' },
+      })
     } catch {
       setServerError('Не удалось зарегистрировать пользователя')
     }
@@ -81,7 +93,9 @@ export const RegisterPage = () => {
     <Form
       className={styles.card}
       title="Регистрация"
+      titleAdornment={<ArrowIcon className={styles.backIcon} />}
       onSubmit={handleSubmit}
+      noValidate
       footer={
         <div className={styles.footer}>
           <span className={styles.footerText}>Уже зарегистрированы?</span>
@@ -91,79 +105,117 @@ export const RegisterPage = () => {
         </div>
       }
     >
-      {serverError ? (
-        <ServerError className={styles.serverError} message={serverError} />
-      ) : null}
+      <div className={styles.fields}>
+        {serverError ? (
+          <ServerError className={styles.serverError} message={serverError} />
+        ) : null}
+        {isError ? (
+          <ServerError
+            className={styles.serverError}
+            message="Не удалось проверить существующие аккаунты."
+            onRetry={() => void refetch()}
+          />
+        ) : null}
 
-      <FormField
-        error={fieldErrors.firstName}
-        label="Имя"
-        requiredMark
+        <FormField
+          id="register-first-name"
+          error={fieldErrors.firstName}
+          label="Имя"
+          requiredMark
+        >
+          <Input
+            autoComplete="given-name"
+            name="firstName"
+            id="register-first-name"
+            error={fieldErrors.firstName}
+            required
+            onChange={handleChange}
+            placeholder="Ярополк"
+            value={values.firstName}
+          />
+        </FormField>
+
+        <FormField
+          id="register-last-name"
+          error={fieldErrors.lastName}
+          label="Фамилия"
+          requiredMark
+        >
+          <Input
+            autoComplete="family-name"
+            name="lastName"
+            id="register-last-name"
+            error={fieldErrors.lastName}
+            required
+            onChange={handleChange}
+            placeholder="Иванов"
+            value={values.lastName}
+          />
+        </FormField>
+
+        <FormField
+          id="register-email"
+          error={fieldErrors.email}
+          label="Email"
+          requiredMark
+        >
+          <Input
+            autoComplete="email"
+            name="email"
+            id="register-email"
+            error={fieldErrors.email}
+            required
+            onChange={handleChange}
+            placeholder="ivanov@yandex.ru"
+            value={values.email}
+          />
+        </FormField>
+
+        <FormField
+          id="register-password"
+          error={fieldErrors.password}
+          label="Придумайте пароль"
+          requiredMark
+        >
+          <Input
+            autoComplete="new-password"
+            name="password"
+            id="register-password"
+            error={fieldErrors.password}
+            required
+            onChange={handleChange}
+            placeholder="******"
+            type="password"
+            value={values.password}
+          />
+        </FormField>
+
+        <FormField
+          id="register-confirm-password"
+          error={fieldErrors.confirmPassword}
+          label="Повторите пароль"
+          requiredMark
+        >
+          <Input
+            autoComplete="new-password"
+            name="confirmPassword"
+            id="register-confirm-password"
+            error={fieldErrors.confirmPassword}
+            required
+            onChange={handleChange}
+            placeholder="******"
+            type="password"
+            value={values.confirmPassword}
+          />
+        </FormField>
+      </div>
+
+      <Button
+        disabled={isLoading || isSaving}
+        type="submit"
+        fullWidth
+        size="lg"
       >
-        <Input
-          autoComplete="given-name"
-          name="firstName"
-          onChange={handleChange}
-          placeholder="Ярополк"
-          value={values.firstName}
-        />
-      </FormField>
-
-      <FormField
-        error={fieldErrors.lastName}
-        label="Фамилия"
-        requiredMark
-      >
-        <Input
-          autoComplete="family-name"
-          name="lastName"
-          onChange={handleChange}
-          placeholder="Иванов"
-          value={values.lastName}
-        />
-      </FormField>
-
-      <FormField error={fieldErrors.email} label="Email" requiredMark>
-        <Input
-          autoComplete="email"
-          name="email"
-          onChange={handleChange}
-          placeholder="ivanov@yandex.ru"
-          value={values.email}
-        />
-      </FormField>
-
-      <FormField
-        error={fieldErrors.password}
-        label="Придумайте пароль"
-        requiredMark
-      >
-        <Input
-          autoComplete="new-password"
-          name="password"
-          onChange={handleChange}
-          placeholder="******"
-          type="password"
-          value={values.password}
-        />
-      </FormField>
-
-      <FormField
-        error={fieldErrors.confirmPassword}
-        label="Повторите пароль"
-        requiredMark
-      >
-        <Input
-          autoComplete="new-password"
-          name="confirmPassword"
-          onChange={handleChange}
-          placeholder="******"
-          type="password"
-          value={values.confirmPassword}
-        />
-      </FormField>
-
-      <Button disabled={isLoading || isSaving} type="submit" fullWidth size="lg">
         Зарегистрироваться
       </Button>
     </Form>

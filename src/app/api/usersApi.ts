@@ -1,4 +1,4 @@
-import type { StoredUser } from '../../types'
+import type { StoredUser, User } from '../../types'
 import { emptySplitApi } from './baseApi'
 import { apiResources, createItemTag, createListTag } from './common/tags'
 import type {
@@ -6,12 +6,17 @@ import type {
   ApiTag,
   CreateUserBody,
   UpdateUserBody,
-  UsersCredentials,
+  UserEmailQuery,
 } from './common/types'
+import {
+  parseUserEmails,
+  parseUserResponse,
+  parseUsers,
+} from './common/validation'
 
 const USERS_URL = apiResources.users
 
-const getUserTags = (users?: StoredUser[]): ApiTag[] => {
+const getUserTags = (users?: Array<Pick<User, 'id'>>): ApiTag[] => {
   if (!users) {
     return [createListTag(apiResources.users)]
   }
@@ -28,6 +33,9 @@ const createUserBody = (payload: CreateUserBody) => {
 
   return {
     ...body,
+    firstName: body.firstName.trim(),
+    lastName: body.lastName.trim(),
+    email: body.email.trim().toLowerCase(),
     id: crypto.randomUUID(),
     notifyByEmail: false,
     language: 'ru' as const,
@@ -36,17 +44,32 @@ const createUserBody = (payload: CreateUserBody) => {
 }
 
 const getUsersEndpoint = (builder: ApiBuilder) =>
-  builder.query<StoredUser[], void>({
-    query: () => USERS_URL,
+  builder.query<Array<Pick<User, 'id' | 'email'>>, void>({
+    query: () => ({
+      url: USERS_URL,
+      params: { _select: 'id,email' },
+    }),
+    transformResponse: parseUserEmails,
     providesTags: (result) => getUserTags(result),
   })
 
 const getUserByIdEndpoint = (builder: ApiBuilder) =>
   builder.query<StoredUser, string>({
     query: (userId) => `${USERS_URL}/${userId}`,
+    transformResponse: parseUserResponse,
     providesTags: (_result, _error, userId) => [
       createItemTag(apiResources.user, userId),
     ],
+  })
+
+const findUserByEmailEndpoint = (builder: ApiBuilder) =>
+  builder.query<StoredUser[], UserEmailQuery>({
+    query: ({ email }) => ({
+      url: USERS_URL,
+      params: { email },
+    }),
+    transformResponse: parseUsers,
+    providesTags: [createListTag(apiResources.users)],
   })
 
 const createUserEndpoint = (builder: ApiBuilder) =>
@@ -56,16 +79,8 @@ const createUserEndpoint = (builder: ApiBuilder) =>
       method: 'POST',
       body: createUserBody(payload),
     }),
+    transformResponse: parseUserResponse,
     invalidatesTags: [createListTag(apiResources.users)],
-  })
-
-const findUsersByCredentialsEndpoint = (builder: ApiBuilder) =>
-  builder.query<StoredUser[], UsersCredentials>({
-    query: (credentials) => ({
-      url: USERS_URL,
-      params: credentials,
-    }),
-    providesTags: [createListTag(apiResources.users)],
   })
 
 const updateUserEndpoint = (builder: ApiBuilder) =>
@@ -75,6 +90,7 @@ const updateUserEndpoint = (builder: ApiBuilder) =>
       method: 'PATCH',
       body: payload,
     }),
+    transformResponse: parseUserResponse,
     invalidatesTags: (_result, _error, { userId }) => [
       createItemTag(apiResources.user, userId),
     ],
@@ -84,8 +100,8 @@ const usersApi = emptySplitApi.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: getUsersEndpoint(builder),
     getUserById: getUserByIdEndpoint(builder),
+    findUserByEmail: findUserByEmailEndpoint(builder),
     createUser: createUserEndpoint(builder),
-    findUsersByCredentials: findUsersByCredentialsEndpoint(builder),
     updateUser: updateUserEndpoint(builder),
   }),
   overrideExisting: false,
@@ -94,8 +110,7 @@ const usersApi = emptySplitApi.injectEndpoints({
 export const {
   useGetUsersQuery,
   useGetUserByIdQuery,
+  useLazyFindUserByEmailQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
-  useFindUsersByCredentialsQuery,
-  useLazyFindUsersByCredentialsQuery,
 } = usersApi

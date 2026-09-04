@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 import type { User } from '../../types'
 import type { RootState } from '../store'
+import { parseStoredUser } from './authUser'
 
 const AUTH_STORAGE_KEY = 'ecommerce.authUser'
 
@@ -17,7 +18,13 @@ const readStoredUser = (): User | null => {
   }
 
   try {
-    return JSON.parse(rawUser) as User
+    const user = parseStoredUser(JSON.parse(rawUser))
+
+    if (!user) {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY)
+    }
+
+    return user
   } catch {
     window.localStorage.removeItem(AUTH_STORAGE_KEY)
     return null
@@ -61,10 +68,12 @@ const authSlice = createSlice({
   },
 })
 
-export const { clearAuthenticatedUser, setAuthenticatedUser } = authSlice.actions
+export const { clearAuthenticatedUser, setAuthenticatedUser } =
+  authSlice.actions
 
 export const selectAuthenticatedUser = (state: RootState) => state.auth.user
 
-export const selectIsAuthenticated = (state: RootState) => state.auth.user !== null
+export const selectIsAuthenticated = (state: RootState) =>
+  state.auth.user !== null
 
 export const authReducer = authSlice.reducer
