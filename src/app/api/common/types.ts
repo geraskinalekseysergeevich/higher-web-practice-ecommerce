@@ -49,6 +49,11 @@ export type RatingBody = Omit<ProductRating, 'createdAt'> & {
   createdAt?: string
 }
 
+export type UpdateRatingBody = {
+  id: string
+  rating: number
+}
+
 export type CartBody = AddToCartPayload
 
 export type CartItemBody = {

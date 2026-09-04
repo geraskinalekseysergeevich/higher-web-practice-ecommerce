@@ -7,6 +7,7 @@ import type {
   CreateOrderBody,
   OrdersQueryArgs,
 } from './common/types'
+import { parseOrderResponse, parseOrders } from './common/validation'
 
 const ORDERS_URL = apiResources.orders
 
@@ -24,12 +25,14 @@ const getOrderTags = (orders?: Order[]): ApiTag[] => {
 const getOrdersEndpoint = (builder: ApiBuilder) =>
   builder.query<Order[], void>({
     query: () => ORDERS_URL,
+    transformResponse: parseOrders,
     providesTags: (result) => getOrderTags(result),
   })
 
 const getOrderByIdEndpoint = (builder: ApiBuilder) =>
   builder.query<Order, string>({
     query: (orderId) => `${ORDERS_URL}/${orderId}`,
+    transformResponse: parseOrderResponse,
     providesTags: (_result, _error, orderId) => [
       createItemTag(apiResources.order, orderId),
     ],
@@ -41,6 +44,7 @@ const getOrdersByUserIdEndpoint = (builder: ApiBuilder) =>
       url: ORDERS_URL,
       params: { userId },
     }),
+    transformResponse: parseOrders,
     providesTags: (result, _error, userId) => {
       if (!userId) {
         return [createListTag(apiResources.orders)]
@@ -64,7 +68,11 @@ const createOrderEndpoint = (builder: ApiBuilder) =>
       method: 'POST',
       body: payload,
     }),
-    invalidatesTags: [createListTag(apiResources.orders)],
+    transformResponse: parseOrderResponse,
+    invalidatesTags: (_result, _error, payload) => [
+      createListTag(apiResources.orders),
+      createItemTag(apiResources.orders, payload.userId),
+    ],
   })
 
 const ordersApi = emptySplitApi.injectEndpoints({

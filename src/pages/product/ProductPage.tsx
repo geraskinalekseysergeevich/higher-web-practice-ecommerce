@@ -1,21 +1,41 @@
+import { skipToken } from '@reduxjs/toolkit/query'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { useAddToCartMutation } from '../../app/api/cartApi'
+import {
+  useAddToCartMutation,
+  useGetCartQuery,
+  useRemoveFromCartMutation,
+  useUpdateCartItemMutation,
+} from '../../app/api/cartApi'
+import { useGetOrdersByUserIdQuery } from '../../app/api/ordersApi'
 import { useGetProductByIdQuery } from '../../app/api/productsApi'
-import { useGetRatingsByProductIdQuery } from '../../app/api/ratingsApi'
+import {
+  useCreateRatingMutation,
+  useGetRatingsByProductIdQuery,
+  useUpdateRatingMutation,
+} from '../../app/api/ratingsApi'
+import { selectAuthenticatedUser } from '../../app/auth/authSlice'
+import { useAppSelector } from '../../app/hooks'
 import {
   Button,
   Card,
   CartIcon,
   DropdownIcon,
   EmptyState,
+  ServerError,
   StarFilledIcon,
   StarIcon,
 } from '../../components/ui'
 import { getProductCharacteristicEntries } from '../../entities/product/lib/getProductCharacteristicEntries'
+import {
+  canUserRateProduct,
+  getProductRatingSummary,
+  getUserProductRating,
+} from '../../entities/product/lib/getProductRatingSummary'
 import { getProductReviewItems } from '../../entities/product/lib/getProductReviewItems'
+import { getProfileDisplayName } from '../../entities/user/lib/profile'
 import styles from './ProductPage.module.css'
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
@@ -30,22 +50,63 @@ const formatBreadcrumb = (
 
 export const ProductPage = () => {
   const { productId } = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const authenticatedUser = useAppSelector(selectAuthenticatedUser)
   const [addToCart, { isLoading: isAddingToCart }] = useAddToCartMutation()
-  const { data: product, isLoading } = useGetProductByIdQuery(productId ?? '', {
+  const [updateCartItem, { isLoading: isUpdatingCart }] =
+    useUpdateCartItemMutation()
+  const [removeFromCart, { isLoading: isRemovingCart }] =
+    useRemoveFromCartMutation()
+  const [createRating, { isLoading: isCreatingRating }] =
+    useCreateRatingMutation()
+  const [updateRating, { isLoading: isUpdatingRating }] =
+    useUpdateRatingMutation()
+  const {
+    data: cartItems = [],
+    isError: isCartError,
+    refetch: refetchCart,
+  } = useGetCartQuery(authenticatedUser?.id ?? skipToken)
+  const {
+    data: product,
+    isError: isProductError,
+    isLoading,
+    refetch: refetchProduct,
+  } = useGetProductByIdQuery(productId ?? '', {
     skip: !productId,
   })
-  const { data: ratings = [] } = useGetRatingsByProductIdQuery(
-    product?.id ?? '',
-    {
-      skip: !product,
-    }
-  )
+  const {
+    data: ratings = [],
+    isError: isRatingsError,
+    refetch: refetchRatings,
+  } = useGetRatingsByProductIdQuery(product?.id ?? '', {
+    skip: !product,
+  })
+  const {
+    data: orders = [],
+    isError: isOrdersError,
+    refetch: refetchOrders,
+  } = useGetOrdersByUserIdQuery(authenticatedUser?.id ?? skipToken)
   const [activeImage, setActiveImage] = useState<string | null>(null)
+  const [selectedRating, setSelectedRating] = useState<number | null>(null)
+  const [ratingError, setRatingError] = useState('')
+  const [cartError, setCartError] = useState('')
 
   if (isLoading) {
     return (
       <section className={styles.page}>
         <p className={styles.loading}>Загружаем товар...</p>
+      </section>
+    )
+  }
+
+  if (isProductError) {
+    return (
+      <section className={styles.page}>
+        <ServerError
+          message="Не удалось загрузить товар."
+          onRetry={() => void refetchProduct()}
+        />
       </section>
     )
   }
@@ -66,7 +127,7 @@ export const ProductPage = () => {
   const images = product.images
   const currentImage =
     (activeImage && images.includes(activeImage) ? activeImage : images[0]) ??
-    ''
+    '/product-placeholder.svg'
   const currentImageIndex = images.indexOf(currentImage)
   const hasImages = images.length > 0
   const breadcrumb = formatBreadcrumb(
@@ -75,6 +136,17 @@ export const ProductPage = () => {
   )
   const characteristics = getProductCharacteristicEntries(product)
   const reviewItems = getProductReviewItems(ratings)
+  const ratingSummary = getProductRatingSummary(ratings)
+  const cartItem = cartItems.find((item) => item.productId === product.id)
+  const isCartMutationPending =
+    isAddingToCart || isUpdatingCart || isRemovingCart
+  const canRate = Boolean(
+    authenticatedUser &&
+    canUserRateProduct(orders, authenticatedUser.id, product.id)
+  )
+  const existingRating = authenticatedUser
+    ? getUserProductRating(ratings, authenticatedUser.id, product.id)
+    : undefined
   const handlePreviousImage = () => {
     if (!hasImages) {
       return
@@ -104,10 +176,79 @@ export const ProductPage = () => {
       return
     }
 
+    if (!authenticatedUser) {
+      navigate('/login', {
+        state: {
+          from: { pathname: location.pathname, search: location.search },
+        },
+      })
+      return
+    }
+
+    setCartError('')
     try {
-      await addToCart({ productId: product.id }).unwrap()
+      if (cartItem) {
+        await updateCartItem({
+          id: cartItem.id,
+          quantity: cartItem.quantity + 1,
+        }).unwrap()
+      } else {
+        await addToCart({
+          productId: product.id,
+          userId: authenticatedUser.id,
+        }).unwrap()
+      }
     } catch {
-      // Ignore the failed mock mutation for now.
+      setCartError('Не удалось обновить корзину')
+    }
+  }
+
+  const handleDecreaseCartQuantity = async () => {
+    if (!cartItem) {
+      return
+    }
+
+    setCartError('')
+
+    try {
+      if (cartItem.quantity <= 1) {
+        await removeFromCart(cartItem.id).unwrap()
+        return
+      }
+
+      await updateCartItem({
+        id: cartItem.id,
+        quantity: cartItem.quantity - 1,
+      }).unwrap()
+    } catch {
+      setCartError('Не удалось обновить корзину')
+    }
+  }
+
+  const handleCreateRating = async () => {
+    if (!authenticatedUser || !canRate || selectedRating === null) {
+      return
+    }
+
+    setRatingError('')
+
+    try {
+      if (existingRating?.id) {
+        await updateRating({
+          id: existingRating.id,
+          rating: selectedRating,
+        }).unwrap()
+      } else {
+        await createRating({
+          productId: product.id,
+          userId: authenticatedUser.id,
+          userName: getProfileDisplayName(authenticatedUser),
+          rating: selectedRating,
+        }).unwrap()
+      }
+      setSelectedRating(null)
+    } catch {
+      setRatingError('Не удалось сохранить оценку')
     }
   }
 
@@ -118,93 +259,174 @@ export const ProductPage = () => {
       <Card className={styles.productCard}>
         <div className={styles.gallery}>
           <div className={styles.mainImageWrap}>
+            {hasImages ? (
+              <button
+                className={clsx(styles.thumbNav, styles.mobileThumbNav)}
+                type="button"
+                aria-label="Предыдущее изображение"
+                onClick={handlePreviousImage}
+              >
+                <DropdownIcon
+                  className={clsx(styles.thumbNavIcon, styles.thumbNavIconLeft)}
+                />
+              </button>
+            ) : null}
+
             <img
               className={styles.mainImage}
               src={currentImage}
               alt={product.name}
+              onError={(event) => {
+                event.currentTarget.src = '/product-placeholder.svg'
+              }}
             />
-          </div>
 
-          <div className={styles.thumbnailsSection}>
-            <button
-              className={styles.thumbNav}
-              type="button"
-              aria-label="Предыдущее изображение"
-              onClick={handlePreviousImage}
-            >
-              <DropdownIcon
-                className={clsx(styles.thumbNavIcon, styles.thumbNavIconLeft)}
-              />
-            </button>
-
-            <div className={styles.thumbnails} aria-label="Галерея товара">
-              {images.slice(0, 4).map((image) => (
-                <button
-                  key={image}
+            {hasImages ? (
+              <button
+                className={clsx(styles.thumbNav, styles.mobileThumbNav)}
+                type="button"
+                aria-label="Следующее изображение"
+                onClick={handleNextImage}
+              >
+                <DropdownIcon
                   className={clsx(
-                    styles.thumbnail,
-                    image === currentImage && styles.thumbnailActive
+                    styles.thumbNavIcon,
+                    styles.thumbNavIconRight
                   )}
-                  type="button"
-                  onClick={() => setActiveImage(image)}
-                  aria-label={`Показать изображение товара «${product.name}»`}
-                >
-                  <img className={styles.thumbnailImage} src={image} alt="" />
-                </button>
-              ))}
-            </div>
-
-            <button
-              className={styles.thumbNav}
-              type="button"
-              aria-label="Следующее изображение"
-              onClick={handleNextImage}
-            >
-              <DropdownIcon
-                className={clsx(
-                  styles.thumbNavIcon,
-                  styles.thumbNavIconRight
-                )}
-              />
-            </button>
+                />
+              </button>
+            ) : null}
           </div>
+
+          {hasImages ? (
+            <div className={styles.thumbnailsSection}>
+              <button
+                className={styles.thumbNav}
+                type="button"
+                aria-label="Предыдущее изображение"
+                onClick={handlePreviousImage}
+              >
+                <DropdownIcon
+                  className={clsx(styles.thumbNavIcon, styles.thumbNavIconLeft)}
+                />
+              </button>
+
+              <div className={styles.thumbnails} aria-label="Галерея товара">
+                {images.slice(0, 4).map((image) => (
+                  <button
+                    key={image}
+                    className={clsx(
+                      styles.thumbnail,
+                      image === currentImage && styles.thumbnailActive
+                    )}
+                    type="button"
+                    onClick={() => setActiveImage(image)}
+                    aria-label={`Показать изображение товара «${product.name}»`}
+                  >
+                    <img
+                      className={styles.thumbnailImage}
+                      src={image}
+                      alt=""
+                      onError={(event) => {
+                        event.currentTarget.src = '/product-placeholder.svg'
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+
+              <button
+                className={styles.thumbNav}
+                type="button"
+                aria-label="Следующее изображение"
+                onClick={handleNextImage}
+              >
+                <DropdownIcon
+                  className={clsx(
+                    styles.thumbNavIcon,
+                    styles.thumbNavIconRight
+                  )}
+                />
+              </button>
+            </div>
+          ) : null}
         </div>
 
         <div className={styles.info}>
           <div className={styles.titleRow}>
-            <h1 id="product-title" className={styles.title}>
-              {product.name}
-            </h1>
+            <div className={styles.titleBlock}>
+              <h1 id="product-title" className={styles.title}>
+                {product.name}
+              </h1>
+
+              <p className={styles.price}>
+                {priceFormatter.format(product.price)} ₽
+              </p>
+            </div>
 
             <div className={styles.ratingSummary}>
               <div className={styles.ratingTopRow}>
                 <StarFilledIcon className={styles.ratingStar} />
                 <span className={styles.ratingValue}>
-                  {product.rating.toFixed(1)}
+                  {(ratingSummary.ratingCount > 0
+                    ? ratingSummary.rating
+                    : product.rating
+                  ).toFixed(1)}
                 </span>
               </div>
               <span className={styles.ratingCount}>
-                {product.ratingCount} оценок
+                {ratingSummary.ratingCount > 0
+                  ? ratingSummary.ratingCount
+                  : product.ratingCount}{' '}
+                оценок
               </span>
             </div>
           </div>
 
-          <p className={styles.price}>
-            {priceFormatter.format(product.price)} ₽
-          </p>
-
           <div className={styles.actionRow}>
-            <Button
-              className={styles.addToCartButton}
-              type="button"
-              size="md"
-              iconOnly
-              disabled={!product.inStock || isAddingToCart}
-              aria-label="Добавить товар в корзину"
-              onClick={handleAddToCart}
-            >
-              <CartIcon className={styles.cartIcon} />
-            </Button>
+            {cartItem ? (
+              <div
+                className={styles.quantity}
+                role="group"
+                aria-label={`Количество товара ${product.name}`}
+              >
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  type="button"
+                  aria-label={`Уменьшить количество ${product.name}`}
+                  disabled={isCartMutationPending}
+                  onClick={() => void handleDecreaseCartQuantity()}
+                >
+                  −
+                </Button>
+                <span className={styles.quantityValue}>
+                  {cartItem.quantity}
+                </span>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  type="button"
+                  aria-label={`Увеличить количество ${product.name}`}
+                  disabled={!product.inStock || isCartMutationPending}
+                  onClick={() => void handleAddToCart()}
+                >
+                  +
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className={styles.addToCartButton}
+                type="button"
+                size="md"
+                disabled={!product.inStock || isCartMutationPending}
+                aria-label={`Добавить «${product.name}» в корзину`}
+                onClick={() => void handleAddToCart()}
+              >
+                <CartIcon className={styles.cartIcon} />
+                <span className={styles.addLabel}>Добавить в корзину</span>
+              </Button>
+            )}
 
             <p className={styles.availability}>
               {product.inStock ? 'Есть в наличии' : 'Нет в наличии'}
@@ -234,25 +456,71 @@ export const ProductPage = () => {
       <Card className={styles.reviewsCard}>
         <h2 className={styles.reviewsTitle}>Оцените усы</h2>
 
-        <div className={styles.reviewInput} aria-hidden="true">
-          {Array.from({ length: 5 }, (_, index) => (
-            <button
-              key={index}
-              className={styles.reviewStarButton}
+        {authenticatedUser && canRate ? (
+          <div className={styles.reviewComposer}>
+            <div className={styles.reviewInput} aria-label="Ваша оценка">
+              {Array.from({ length: 5 }, (_, index) => (
+                <button
+                  key={index}
+                  className={styles.reviewStarButton}
+                  type="button"
+                  aria-label={`Оценка ${index + 1}`}
+                  aria-pressed={selectedRating === index + 1}
+                  onClick={() => setSelectedRating(index + 1)}
+                >
+                  {selectedRating !== null && selectedRating > index ? (
+                    <StarFilledIcon className={styles.reviewStar} />
+                  ) : (
+                    <StarIcon className={styles.reviewStar} />
+                  )}
+                </button>
+              ))}
+            </div>
+            <Button
+              size="sm"
               type="button"
-              disabled
+              disabled={
+                selectedRating === null || isCreatingRating || isUpdatingRating
+              }
+              onClick={() => void handleCreateRating()}
             >
-              <StarIcon className={styles.reviewStar} />
-            </button>
-          ))}
-        </div>
+              {existingRating ? 'Обновить оценку' : 'Сохранить оценку'}
+            </Button>
+          </div>
+        ) : (
+          <p className={styles.reviewHint}>
+            {authenticatedUser
+              ? 'Оценка доступна после получения заказа.'
+              : 'Войдите, чтобы оценить товар после покупки.'}
+          </p>
+        )}
+
+        {ratingError ? (
+          <p className={styles.ratingError}>{ratingError}</p>
+        ) : null}
+        {cartError ? <p className={styles.ratingError}>{cartError}</p> : null}
+        {isCartError ? (
+          <ServerError
+            message="Не удалось загрузить корзину."
+            onRetry={() => void refetchCart()}
+          />
+        ) : null}
+        {isRatingsError || isOrdersError ? (
+          <ServerError
+            message="Не удалось загрузить все оценки товара."
+            onRetry={() => {
+              if (isRatingsError) void refetchRatings()
+              if (isOrdersError) void refetchOrders()
+            }}
+          />
+        ) : null}
 
         <div className={styles.reviewsList}>
           {reviewItems.length > 0 ? (
             reviewItems.map((review) => (
               <article key={review.id} className={styles.reviewRow}>
                 <div className={styles.reviewStars}>
-                  {review.stars.map((filled, index) => (
+                  {review.stars.map((filled, index) =>
                     filled ? (
                       <StarFilledIcon
                         key={`${review.id}-star-${index}`}
@@ -264,7 +532,7 @@ export const ProductPage = () => {
                         className={styles.reviewStarMuted}
                       />
                     )
-                  ))}
+                  )}
                 </div>
 
                 <span className={styles.reviewScore}>{review.ratingLabel}</span>

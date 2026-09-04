@@ -28,7 +28,8 @@ export const getProductReviewItems = (
     .slice()
     .sort(sortByCreatedAtDesc)
     .map((rating) => ({
-      id: `${rating.productId}-${rating.userId}-${rating.createdAt}`,
+      id:
+        rating.id ?? `${rating.productId}-${rating.userId}-${rating.createdAt}`,
       ratingLabel: rating.rating.toFixed(1),
       rating: rating.rating,
       userName: rating.userName,
