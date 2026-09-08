@@ -1,13 +1,12 @@
 import { skipToken } from '@reduxjs/toolkit/query'
-import {
-  type ChangeEvent,
-  type FormEvent,
-  useEffect,
-  useState,
-} from 'react'
+import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useGetUserByIdQuery, useUpdateUserMutation } from '../../app/api/usersApi'
+import {
+  useGetUserByIdQuery,
+  useGetUsersQuery,
+  useUpdateUserMutation,
+} from '../../app/api/usersApi'
 import {
   saveAuthenticatedUser,
   selectAuthenticatedUser,
@@ -17,15 +16,13 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
   Button,
   Card,
-  Checkbox,
   FormField,
   Input,
-  Select,
   ServerError,
 } from '../../components/ui'
-import { LANGUAGE_OPTIONS } from '../../entities/user/lib/languageOptions'
 import {
   buildProfileUpdatePayload,
+  hasDuplicateProfileEmail,
   validateProfileFormValues,
 } from '../../entities/user/lib/profile'
 import { ProfileAvatar } from './components/ProfileAvatar'
@@ -58,19 +55,25 @@ export const ProfileEditPage = () => {
   const dispatch = useAppDispatch()
   const authenticatedUser = useAppSelector(selectAuthenticatedUser)
   const userId = authenticatedUser?.id
-  const { data: user } = useGetUserByIdQuery(userId ?? skipToken)
+  const {
+    data: user,
+    isError: isUserError,
+    refetch: refetchUser,
+  } = useGetUserByIdQuery(userId ?? skipToken)
+  const {
+    data: users = [],
+    isError: isUsersError,
+    isLoading: isUsersLoading,
+    refetch: refetchUsers,
+  } = useGetUsersQuery()
   const [updateUser, { isLoading: isSaving }] = useUpdateUserMutation()
   const [serverError, setServerError] = useState('')
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof ProfileValues, string>>
   >({})
   const [values, setValues] = useState<ProfileValues>(() =>
-    createInitialValues(user)
+    createInitialValues(user ?? authenticatedUser ?? undefined)
   )
-
-  useEffect(() => {
-    setValues(createInitialValues(user))
-  }, [user])
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -103,6 +106,24 @@ export const ProfileEditPage = () => {
       return
     }
 
+    if (isUsersLoading) {
+      setServerError('Подождите, пока загрузится проверка email.')
+      return
+    }
+
+    if (isUsersError) {
+      setServerError('Не удалось проверить email. Нажмите «Повторить».')
+      return
+    }
+
+    if (hasDuplicateProfileEmail(users, user.id, values.email)) {
+      setFieldErrors((current) => ({
+        ...current,
+        email: 'Пользователь с таким email уже существует',
+      }))
+      return
+    }
+
     try {
       const updatedUser = await updateUser({
         userId: user.id,
@@ -120,6 +141,17 @@ export const ProfileEditPage = () => {
     }
   }
 
+  if (isUserError) {
+    return (
+      <section className={styles.page}>
+        <ServerError
+          message="Не удалось загрузить данные профиля."
+          onRetry={() => void refetchUser()}
+        />
+      </section>
+    )
+  }
+
   if (!user) {
     return (
       <section className={styles.page}>
@@ -130,78 +162,96 @@ export const ProfileEditPage = () => {
 
   return (
     <section className={styles.page} aria-labelledby="profile-edit-title">
+      <h1 id="profile-edit-title" className={styles.pageTitle}>
+        Мой профиль
+      </h1>
       <Card className={styles.card}>
         <div className={styles.hero}>
           <ProfileAvatar editing />
-
-          <div className={styles.header}>
-            <p className={styles.eyebrow}>Мой профиль</p>
-            <h1 id="profile-edit-title" className={styles.title}>
-              Редактирование профиля
-            </h1>
-          </div>
         </div>
 
-        {serverError ? <ServerError message={serverError} /> : null}
+        {serverError ? (
+          <ServerError
+            message={serverError}
+            onRetry={() => void refetchUsers()}
+          />
+        ) : null}
 
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <div className={styles.grid}>
-            <FormField label="Имя" requiredMark error={fieldErrors.firstName}>
+            <FormField
+              className={styles.field}
+              id="profile-first-name"
+              label="Имя"
+              error={fieldErrors.firstName}
+              requiredMark
+            >
               <Input
                 autoComplete="given-name"
                 name="firstName"
+                id="profile-first-name"
+                error={fieldErrors.firstName}
+                required
                 onChange={handleChange}
                 value={values.firstName}
               />
             </FormField>
 
-            <FormField label="Фамилия" requiredMark error={fieldErrors.lastName}>
+            <FormField
+              className={styles.field}
+              id="profile-last-name"
+              label="Фамилия"
+              error={fieldErrors.lastName}
+              requiredMark
+            >
               <Input
                 autoComplete="family-name"
                 name="lastName"
+                id="profile-last-name"
+                error={fieldErrors.lastName}
+                required
                 onChange={handleChange}
                 value={values.lastName}
               />
             </FormField>
 
-            <FormField label="Email" requiredMark error={fieldErrors.email}>
+            <FormField
+              className={styles.field}
+              id="profile-email"
+              label="Email"
+              error={fieldErrors.email}
+              requiredMark
+            >
               <Input
                 autoComplete="email"
                 name="email"
+                id="profile-email"
+                error={fieldErrors.email}
+                required
                 onChange={handleChange}
                 value={values.email}
               />
             </FormField>
 
-            <Checkbox
-              checked={values.notifyByEmail}
-              label="Уведомлять об изменении статуса заказов по почте"
+            <input type="hidden" name="language" value={values.language} />
+            <input
+              type="hidden"
               name="notifyByEmail"
-              onChange={handleChange}
+              value={String(values.notifyByEmail)}
             />
-
-            <FormField
-              label="Язык"
-              requiredMark
-              error={fieldErrors.language}
-            >
-              <Select
-                name="language"
-                onChange={handleChange}
-                value={values.language}
-              >
-                {LANGUAGE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
           </div>
 
           <div className={styles.actions}>
-            <Button disabled={isSaving} type="submit" size="lg">
-              Сохранить изменения
+            <Button
+              className={styles.cancel}
+              onClick={() => navigate('/profile')}
+              type="button"
+              variant="secondary"
+            >
+              Отменить
+            </Button>
+            <Button disabled={isSaving || isUsersLoading} type="submit">
+              Сохранить
             </Button>
           </div>
         </form>

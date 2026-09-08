@@ -1,5 +1,6 @@
 import {
   createBrowserRouter,
+  Navigate,
   type RouteObject,
   RouterProvider,
 } from 'react-router-dom'
@@ -8,6 +9,7 @@ import { AuthLayout, MainLayout } from '../components/layout'
 import { LoginPage } from '../pages/auth/LoginPage'
 import { RegisterPage } from '../pages/auth/RegisterPage'
 import { CartPage } from '../pages/cart/CartPage'
+import { CategoryProductPage } from '../pages/category/CategoryProductPage'
 import { CheckoutPage } from '../pages/checkout/CheckoutPage'
 import { OrderConfirmationPage } from '../pages/confirmation/OrderConfirmationPage'
 import { HomePage } from '../pages/home/HomePage'
@@ -26,6 +28,11 @@ const routes: RouteObject[] = [
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'categories', element: <Navigate to="/" replace /> },
+      {
+        path: 'categories/:category/:subcategory',
+        element: <CategoryProductPage />,
+      },
       { path: 'product/:productId', element: <ProductPage /> },
       {
         element: <RequireAuth />,

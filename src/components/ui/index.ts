@@ -15,9 +15,12 @@ export {
   CameraIcon,
   CartIcon,
   DropdownIcon,
+  HomeIcon,
+  ListIcon,
   SearchIcon,
   StarFilledIcon,
   StarIcon,
+  TrashIcon,
   UserIcon,
 } from './Icons/Icons'
 export type { InputProps } from './Input/Input'

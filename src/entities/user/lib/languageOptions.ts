@@ -1,15 +1,15 @@
 import type { LanguageCode } from '../../../types'
 
 export const LANGUAGE_LABELS: Record<LanguageCode, string> = {
-  en: 'English',
-  es: 'Spanish',
-  fr: 'French',
-  de: 'German',
-  it: 'Italian',
-  pt: 'Portuguese',
-  ru: 'Russian',
-  zh: 'Chinese',
-  ja: 'Japanese',
+  en: 'Английский',
+  es: 'Испанский',
+  fr: 'Французский',
+  de: 'Немецкий',
+  it: 'Итальянский',
+  pt: 'Португальский',
+  ru: 'Русский',
+  zh: 'Китайский',
+  ja: 'Японский',
 }
 
 export const LANGUAGE_OPTIONS = Object.entries(LANGUAGE_LABELS).map(

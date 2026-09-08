@@ -15,6 +15,19 @@ export type CheckoutFieldErrors = Partial<
   Record<keyof CheckoutValidationValues, string>
 >
 
+export const clearCheckoutFieldError = (
+  errors: CheckoutFieldErrors,
+  field: keyof CheckoutFieldErrors
+): CheckoutFieldErrors => {
+  if (!(field in errors)) {
+    return errors
+  }
+
+  const nextErrors = { ...errors }
+  delete nextErrors[field]
+  return nextErrors
+}
+
 const hasValue = (value?: string) => Boolean(value?.trim())
 
 export const validateCheckoutValues = (

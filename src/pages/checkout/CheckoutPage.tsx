@@ -1,5 +1,5 @@
 import { skipToken } from '@reduxjs/toolkit/query'
-import type { SyntheticEvent } from 'react'
+import type { ChangeEvent, SyntheticEvent } from 'react'
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -28,9 +28,11 @@ import { getCartSummary } from '../../entities/cart/lib/getCartSummary'
 import { buildOrderFromCheckout } from '../../entities/order/lib/buildOrderFromCheckout'
 import {
   type CheckoutFieldErrors,
+  clearCheckoutFieldError,
   getDeliveryEstimate,
   validateCheckoutValues,
 } from '../../entities/order/lib/checkoutValidation'
+import { formatPhoneNumber } from '../../entities/order/lib/formatPhoneNumber'
 import styles from './CheckoutPage.module.css'
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
@@ -190,6 +192,15 @@ export const CheckoutPage = () => {
     void submitCheckout()
   }
 
+  const handleFieldChange = (field: keyof CheckoutFieldErrors) => {
+    setFieldErrors((current) => clearCheckoutFieldError(current, field))
+  }
+
+  const handlePhoneChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.currentTarget.value = formatPhoneNumber(event.currentTarget.value)
+    handleFieldChange('phone')
+  }
+
   if (isUserError || isCartError || isProductsError || isPickupPointsError) {
     return (
       <section className={styles.page}>
@@ -345,6 +356,7 @@ export const CheckoutPage = () => {
                     defaultValue="Россия"
                     error={fieldErrors.country}
                     name="country"
+                    onChange={() => handleFieldChange('country')}
                     required
                   />
                   <Input
@@ -353,6 +365,7 @@ export const CheckoutPage = () => {
                     defaultValue="Москва"
                     error={fieldErrors.city}
                     name="city"
+                    onChange={() => handleFieldChange('city')}
                     required
                   />
                   <Input
@@ -361,6 +374,7 @@ export const CheckoutPage = () => {
                     defaultValue="Тверская"
                     error={fieldErrors.street}
                     name="street"
+                    onChange={() => handleFieldChange('street')}
                     required
                   />
                   <Input
@@ -369,6 +383,7 @@ export const CheckoutPage = () => {
                     defaultValue="7"
                     error={fieldErrors.house}
                     name="house"
+                    onChange={() => handleFieldChange('house')}
                     required
                   />
                   <Input label="Квартира" defaultValue="15" name="apartment" />
@@ -424,6 +439,7 @@ export const CheckoutPage = () => {
                   error={fieldErrors.firstName}
                   name="firstName"
                   autoComplete="given-name"
+                  onChange={() => handleFieldChange('firstName')}
                 />
                 <Input
                   label="Фамилия"
@@ -432,6 +448,7 @@ export const CheckoutPage = () => {
                   error={fieldErrors.lastName}
                   name="lastName"
                   autoComplete="family-name"
+                  onChange={() => handleFieldChange('lastName')}
                 />
                 <Input
                   label="Email"
@@ -440,16 +457,21 @@ export const CheckoutPage = () => {
                   error={fieldErrors.email}
                   name="email"
                   autoComplete="email"
+                  onChange={() => handleFieldChange('email')}
                 />
                 <Input
                   label="Телефон"
                   requiredMark
-                  defaultValue={user.phone ?? ''}
+                  defaultValue={formatPhoneNumber(user.phone ?? '')}
                   error={fieldErrors.phone}
+                  inputMode="tel"
+                  maxLength={16}
                   name="phone"
                   autoComplete="tel"
+                  onChange={handlePhoneChange}
                   placeholder="+7 999 123-45-67"
                   required
+                  type="tel"
                 />
               </div>
 

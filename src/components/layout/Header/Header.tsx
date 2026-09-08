@@ -58,7 +58,6 @@ export const Header = () => {
           className={styles.search}
           key={`${location.pathname}${location.search}`}
           defaultValue={searchQuery}
-          onClear={() => navigate('/')}
           onSubmit={handleSearch}
         />
 

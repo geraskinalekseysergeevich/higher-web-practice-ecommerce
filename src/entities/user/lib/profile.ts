@@ -13,8 +13,9 @@ export type ProfileFormErrors = Partial<Record<keyof ProfileFormValues, string>>
 
 const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value)
 
-export const getProfileDisplayName = (user: Pick<User, 'firstName' | 'lastName'>) =>
-  `${user.firstName} ${user.lastName}`.trim()
+export const getProfileDisplayName = (
+  user: Pick<User, 'firstName' | 'lastName'>
+) => `${user.firstName} ${user.lastName}`.trim()
 
 export const getProfileLanguageLabel = (language?: User['language']) =>
   getLanguageLabel(language)
@@ -54,3 +55,14 @@ export const buildProfileUpdatePayload = (
   notifyByEmail: values.notifyByEmail,
   language: values.language.trim() as User['language'],
 })
+
+export const hasDuplicateProfileEmail = (
+  users: Array<Pick<User, 'id' | 'email'>>,
+  currentUserId: string,
+  email: string
+) =>
+  users.some(
+    (user) =>
+      user.id !== currentUserId &&
+      user.email.trim().toLowerCase() === email.trim().toLowerCase()
+  )
