@@ -1,7 +1,9 @@
 .root {
   position: relative;
-  width: 5rem;
-  height: 5rem;
+  width: var(--space-20);
+  height: var(--space-20);
+  flex: 0 0 var(--space-20);
+  aspect-ratio: 1;
 }
 
 .avatar {
@@ -9,6 +11,8 @@
   place-items: center;
   width: 100%;
   height: 100%;
+  flex: 0 0 auto;
+  aspect-ratio: 1;
   border-radius: 50%;
   background: linear-gradient(
     135deg,

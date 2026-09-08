@@ -92,7 +92,7 @@ export const OrderConfirmationPage = () => {
     <section className={styles.page} aria-labelledby="confirmation-title">
       <header className={styles.header}>
         <h1 id="confirmation-title" className={styles.title}>
-          Спасибо за покупку!
+          Спасибо за заказ!
         </h1>
         <p className={styles.subtitle}>
           Мы уже готовим выбранные усы к отправке!
@@ -190,10 +190,16 @@ export const OrderConfirmationPage = () => {
           type="button"
           onClick={() => window.print()}
         >
-          Распечатать
+          Распечатать заказ
         </button>
         <Link className={styles.secondaryAction} to="/profile/orders">
-          Все заказы
+          История заказов
+        </Link>
+      </div>
+
+      <div className={styles.returnPanel}>
+        <Link className={styles.returnAction} to="/">
+          Вернуться к покупкам
         </Link>
       </div>
     </section>

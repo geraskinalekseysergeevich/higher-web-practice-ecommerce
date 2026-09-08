@@ -218,23 +218,87 @@
     padding: var(--space-4);
   }
 
+  .details {
+    gap: var(--space-2);
+  }
+
   .summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
+    gap: 0.125rem var(--space-3);
   }
 
   .summaryAside {
-    justify-items: start;
+    display: contents;
+  }
+
+  .summaryInfo {
+    display: contents;
+  }
+
+  .summaryTopLine {
+    grid-column: 1 / -1;
+    flex-wrap: nowrap;
+  }
+
+  .date {
+    flex-shrink: 0;
+  }
+
+  .number {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .statusLine {
+    grid-column: 1;
+  }
+
+  .status {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .deliveryLabel {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
+  }
+
+  .price {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    align-self: center;
+  }
+
+  .payment {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .toggleLabel {
+    min-height: 2.25rem;
+  }
+
+  .toggleIcon {
+    display: none;
   }
 
   .item {
-    grid-template-columns: 5rem minmax(0, 1fr);
+    grid-template-columns: 3.75rem minmax(0, 1fr) auto;
+    min-height: 3.75rem;
+  }
+
+  .itemImage {
+    width: 3.75rem;
+    height: 3.75rem;
   }
 
   .itemTotal {
-    grid-column: 2;
+    grid-column: auto;
   }
 
-  .summaryTopLine,
   .statusLine {
     flex-wrap: wrap;
   }

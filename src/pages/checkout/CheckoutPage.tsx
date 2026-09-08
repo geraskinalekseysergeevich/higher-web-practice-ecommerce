@@ -281,11 +281,33 @@ export const CheckoutPage = () => {
             onSubmit={handleSubmit}
           >
             <section className={styles.section}>
-              <SectionHeading compact title="Способ оплаты" />
+              <SectionHeading
+                className={styles.sectionHeading}
+                compact
+                title="Способ оплаты"
+              />
 
-              <div className={`${styles.options} ${styles.paymentOptions}`}>
-                <div className={styles.paymentTop}>
-                  {paymentOptions.slice(0, 2).map(({ value, label }) => (
+              <div className={styles.sectionCard}>
+                <div className={`${styles.options} ${styles.paymentOptions}`}>
+                  <div className={styles.paymentTop}>
+                    {paymentOptions.slice(0, 2).map(({ value, label }) => (
+                      <label
+                        key={value}
+                        className={styles.choice}
+                        data-selected={paymentMethod === value}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value={value}
+                          checked={paymentMethod === value}
+                          onChange={() => setPaymentMethod(value)}
+                        />
+                        <span>{label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {paymentOptions.slice(2).map(({ value, label }) => (
                     <label
                       key={value}
                       className={styles.choice}
@@ -302,189 +324,209 @@ export const CheckoutPage = () => {
                     </label>
                   ))}
                 </div>
-                {paymentOptions.slice(2).map(({ value, label }) => (
-                  <label
-                    key={value}
-                    className={styles.choice}
-                    data-selected={paymentMethod === value}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value={value}
-                      checked={paymentMethod === value}
-                      onChange={() => setPaymentMethod(value)}
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
               </div>
             </section>
 
             <section className={styles.section}>
-              <SectionHeading compact title="Способ доставки" />
+              <SectionHeading
+                className={styles.sectionHeading}
+                compact
+                title="Способ доставки"
+              />
 
-              <div className={styles.options}>
-                {[
-                  ['courier', 'Курьером'],
-                  ['pickup', 'В пункт выдачи'],
-                ].map(([value, label]) => (
-                  <label
-                    key={value}
-                    className={styles.choice}
-                    data-selected={deliveryMethod === value}
-                  >
-                    <input
-                      type="radio"
-                      name="deliveryMethod"
-                      value={value}
-                      checked={deliveryMethod === value}
-                      onChange={() =>
-                        setDeliveryMethod(value as 'courier' | 'pickup')
-                      }
-                    />
-                    <span>{label}</span>
-                  </label>
-                ))}
-              </div>
-
-              {deliveryMethod === 'courier' ? (
-                <div className={styles.deliveryGrid}>
-                  <Input
-                    label="Страна"
-                    requiredMark
-                    defaultValue="Россия"
-                    error={fieldErrors.country}
-                    name="country"
-                    onChange={() => handleFieldChange('country')}
-                    required
-                  />
-                  <Input
-                    label="Город"
-                    requiredMark
-                    defaultValue="Москва"
-                    error={fieldErrors.city}
-                    name="city"
-                    onChange={() => handleFieldChange('city')}
-                    required
-                  />
-                  <Input
-                    label="Улица"
-                    requiredMark
-                    defaultValue="Тверская"
-                    error={fieldErrors.street}
-                    name="street"
-                    onChange={() => handleFieldChange('street')}
-                    required
-                  />
-                  <Input
-                    label="Дом"
-                    requiredMark
-                    defaultValue="7"
-                    error={fieldErrors.house}
-                    name="house"
-                    onChange={() => handleFieldChange('house')}
-                    required
-                  />
-                  <Input label="Квартира" defaultValue="15" name="apartment" />
-                  <Input
-                    label="Индекс"
-                    defaultValue="125009"
-                    name="postalCode"
-                  />
+              <div className={styles.sectionCard}>
+                <div className={`${styles.options} ${styles.deliveryOptions}`}>
+                  {[
+                    ['courier', 'Курьером'],
+                    ['pickup', 'В пункт выдачи'],
+                  ].map(([value, label]) => (
+                    <label
+                      key={value}
+                      className={styles.choice}
+                      data-selected={deliveryMethod === value}
+                    >
+                      <input
+                        type="radio"
+                        name="deliveryMethod"
+                        value={value}
+                        checked={deliveryMethod === value}
+                        onChange={() =>
+                          setDeliveryMethod(value as 'courier' | 'pickup')
+                        }
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
                 </div>
-              ) : (
-                <div className={styles.pickup}>
-                  <SelectButton
-                    label={selectedPickupPoint?.name ?? 'Выберите пункт выдачи'}
-                    open={isPickupOpen}
-                    onClick={() => setIsPickupOpen((open) => !open)}
-                  />
-                  {isPickupOpen ? (
-                    <div className={styles.pickupList}>
-                      {pickupPoints.map((point) => (
-                        <ListButton
-                          key={point.id}
-                          label={`${point.name} · ${point.address}`}
-                          selected={point.id === activePickupPointId}
-                          onClick={() => {
-                            setSelectedPickupPointId(point.id)
-                            setIsPickupOpen(false)
-                          }}
-                        />
-                      ))}
-                    </div>
-                  ) : null}
-                  {fieldErrors.pickupPointId ? (
-                    <p className={styles.fieldError} role="alert">
-                      {fieldErrors.pickupPointId}
+
+                {deliveryMethod === 'courier' ? (
+                  <div className={styles.deliveryFields}>
+                    <p className={styles.deliveryAddressLabel}>
+                      Доставить по адресу:
                     </p>
-                  ) : null}
-                </div>
-              )}
+                    <div className={styles.deliveryGrid}>
+                      <Input
+                        label="Страна"
+                        requiredMark
+                        defaultValue="Россия"
+                        error={fieldErrors.country}
+                        name="country"
+                        onChange={() => handleFieldChange('country')}
+                        required
+                      />
+                      <Input
+                        label="Город"
+                        requiredMark
+                        defaultValue="Москва"
+                        error={fieldErrors.city}
+                        name="city"
+                        onChange={() => handleFieldChange('city')}
+                        required
+                      />
+                      <Input
+                        label="Улица"
+                        requiredMark
+                        defaultValue="Тверская"
+                        error={fieldErrors.street}
+                        name="street"
+                        onChange={() => handleFieldChange('street')}
+                        placeholder="улица, дом, квартира"
+                        required
+                      />
+                      <Input
+                        label="Дом"
+                        requiredMark
+                        defaultValue="7"
+                        error={fieldErrors.house}
+                        name="house"
+                        onChange={() => handleFieldChange('house')}
+                        required
+                      />
+                      <Input
+                        label="Квартира"
+                        defaultValue="15"
+                        name="apartment"
+                      />
+                      <Input
+                        label="Индекс"
+                        defaultValue="125009"
+                        name="postalCode"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.pickup}>
+                    <SelectButton
+                      label={
+                        selectedPickupPoint?.name ?? 'Выберите пункт выдачи'
+                      }
+                      open={isPickupOpen}
+                      onClick={() => setIsPickupOpen((open) => !open)}
+                    />
+                    {isPickupOpen ? (
+                      <div className={styles.pickupList}>
+                        {pickupPoints.map((point) => (
+                          <ListButton
+                            key={point.id}
+                            label={`${point.name} · ${point.address}`}
+                            selected={point.id === activePickupPointId}
+                            onClick={() => {
+                              setSelectedPickupPointId(point.id)
+                              setIsPickupOpen(false)
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
+                    {fieldErrors.pickupPointId ? (
+                      <p className={styles.fieldError} role="alert">
+                        {fieldErrors.pickupPointId}
+                      </p>
+                    ) : null}
+                  </div>
+                )}
 
-              <p className={styles.deliveryEstimate}>
-                Срок доставки: {getDeliveryEstimate(deliveryMethod)}
-              </p>
+                <p className={styles.deliveryEstimate}>
+                  Срок доставки: {getDeliveryEstimate(deliveryMethod)}
+                </p>
+              </div>
             </section>
 
             <section className={styles.section}>
-              <SectionHeading compact title="Контактные данные" />
+              <SectionHeading
+                className={`${styles.sectionHeading} ${styles.recipientHeadingDesktop}`}
+                compact
+                title="Контактные данные"
+              />
+              <SectionHeading
+                className={`${styles.sectionHeading} ${styles.recipientHeadingMobile}`}
+                compact
+                title="Получатель"
+              />
 
-              <div className={styles.formGrid}>
-                <Input
-                  label="Имя"
-                  requiredMark
-                  defaultValue={user.firstName}
-                  error={fieldErrors.firstName}
-                  name="firstName"
-                  autoComplete="given-name"
-                  onChange={() => handleFieldChange('firstName')}
-                />
-                <Input
-                  label="Фамилия"
-                  requiredMark
-                  defaultValue={user.lastName}
-                  error={fieldErrors.lastName}
-                  name="lastName"
-                  autoComplete="family-name"
-                  onChange={() => handleFieldChange('lastName')}
-                />
-                <Input
-                  label="Email"
-                  requiredMark
-                  defaultValue={user.email}
-                  error={fieldErrors.email}
-                  name="email"
-                  autoComplete="email"
-                  onChange={() => handleFieldChange('email')}
-                />
-                <Input
-                  label="Телефон"
-                  requiredMark
-                  defaultValue={formatPhoneNumber(user.phone ?? '')}
-                  error={fieldErrors.phone}
-                  inputMode="tel"
-                  maxLength={16}
-                  name="phone"
-                  autoComplete="tel"
-                  onChange={handlePhoneChange}
-                  placeholder="+7 999 123-45-67"
-                  required
-                  type="tel"
-                />
+              <div className={styles.sectionCard}>
+                <div className={styles.recipientIdentity}>
+                  <span>
+                    {user.firstName} {user.lastName}
+                  </span>
+                  <span>{user.email}</span>
+                </div>
+
+                <div className={styles.formGrid}>
+                  <Input
+                    label="Имя"
+                    requiredMark
+                    defaultValue={user.firstName}
+                    error={fieldErrors.firstName}
+                    name="firstName"
+                    autoComplete="given-name"
+                    onChange={() => handleFieldChange('firstName')}
+                  />
+                  <Input
+                    label="Фамилия"
+                    requiredMark
+                    defaultValue={user.lastName}
+                    error={fieldErrors.lastName}
+                    name="lastName"
+                    autoComplete="family-name"
+                    onChange={() => handleFieldChange('lastName')}
+                  />
+                  <Input
+                    label="Email"
+                    requiredMark
+                    defaultValue={user.email}
+                    error={fieldErrors.email}
+                    name="email"
+                    autoComplete="email"
+                    onChange={() => handleFieldChange('email')}
+                  />
+                  <Input
+                    label="Телефон"
+                    requiredMark
+                    defaultValue={formatPhoneNumber(user.phone ?? '')}
+                    error={fieldErrors.phone}
+                    inputMode="tel"
+                    maxLength={16}
+                    name="phone"
+                    autoComplete="tel"
+                    onChange={handlePhoneChange}
+                    placeholder="+7 999 123-45-67"
+                    required
+                    type="tel"
+                  />
+                </div>
+
+                <label className={styles.commentField}>
+                  <span className={styles.commentLabel}>
+                    Комментарий к заказу
+                  </span>
+                  <textarea
+                    className={styles.commentInput}
+                    name="comment"
+                    rows={4}
+                  />
+                </label>
               </div>
-
-              <label className={styles.commentField}>
-                <span className={styles.commentLabel}>
-                  Комментарий к заказу
-                </span>
-                <textarea
-                  className={styles.commentInput}
-                  name="comment"
-                  rows={4}
-                />
-              </label>
             </section>
 
             <div className={styles.switchRow}>
@@ -504,7 +546,11 @@ export const CheckoutPage = () => {
         </div>
 
         <Card className={styles.summaryCard}>
-          <SectionHeading compact title="Ваш заказ" />
+          <SectionHeading
+            className={styles.summaryHeading}
+            compact
+            title="Ваш заказ"
+          />
           <span className={styles.summaryCount}>
             {summary.totalItems} товара
           </span>

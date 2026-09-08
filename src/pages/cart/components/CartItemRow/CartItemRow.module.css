@@ -93,6 +93,10 @@
   color: var(--color-text-primary);
 }
 
+.delivery {
+  display: none;
+}
+
 @media (max-width: 48rem) {
   .root {
     grid-template-columns: 3.75rem minmax(0, 1fr) auto;
@@ -129,5 +133,92 @@
     grid-column: 3;
     grid-row: 2;
     justify-self: end;
+  }
+}
+
+@media (max-width: 40rem) {
+  .root {
+    grid-template-rows: 3.75rem auto;
+    row-gap: var(--space-3);
+    padding: 0 0 var(--space-3);
+  }
+
+  .image {
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .info {
+    align-self: start;
+    min-width: 0;
+  }
+
+  .name {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .quantity {
+    grid-row: 1;
+    align-self: end;
+    gap: 0.375rem;
+  }
+
+  .quantityButton {
+    width: 1.5rem;
+    height: 1.5rem;
+    min-height: 1.5rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-xs);
+  }
+
+  .quantityValue {
+    display: grid;
+    width: 1.5rem;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-lg);
+  }
+
+  .total {
+    align-self: start;
+    min-width: 0;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .removeButton {
+    grid-row: 1;
+    align-self: end;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .removeButton svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .delivery {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    gap: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .delivery span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
   }
 }

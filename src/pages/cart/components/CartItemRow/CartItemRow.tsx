@@ -95,5 +95,10 @@ export const CartItemRow = ({
     >
       <TrashIcon />
     </button>
+
+    <div className={styles.delivery}>
+      <span>Доставят</span>
+      <time>30 февраля 2025 г.</time>
+    </div>
   </article>
 )

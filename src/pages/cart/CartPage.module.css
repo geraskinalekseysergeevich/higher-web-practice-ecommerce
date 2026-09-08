@@ -56,6 +56,19 @@
 }
 
 @media (max-width: 40rem) {
+  .page {
+    gap: var(--space-3);
+    padding-bottom: 7rem;
+  }
+
+  .layout {
+    gap: 0;
+  }
+
+  .itemsList {
+    gap: var(--space-3);
+  }
+
   .itemCard {
     padding: 0;
     border: 0;

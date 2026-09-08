@@ -403,7 +403,7 @@
 @media (max-width: 40rem) {
   .page {
     display: block;
-    padding: var(--space-5) var(--space-5) 0;
+    padding: var(--space-5) var(--space-5) calc(4.25rem + var(--space-5));
   }
 
   .breadcrumb,
@@ -414,20 +414,25 @@
   .productCard {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 18rem minmax(0, 1fr);
+    grid-template-rows: 18rem auto;
     gap: var(--space-3);
     width: 100%;
-    height: 40.375rem;
+    height: auto;
     padding: 0;
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .addToCartButton {
     width: auto;
     flex: 1;
+  }
+
+  .quantity {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .gallery {
@@ -543,6 +548,10 @@
     height: 2.25rem;
     min-height: 2.25rem;
     padding: var(--space-2);
+  }
+
+  .addLabel {
+    display: none;
   }
 
   .availability {
