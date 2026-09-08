@@ -1,7 +1,22 @@
 import {
+  clearCheckoutFieldError,
   getDeliveryEstimate,
   validateCheckoutValues,
 } from './checkoutValidation'
+
+describe('clearCheckoutFieldError', () => {
+  it('removes the error for the field that was edited', () => {
+    expect(
+      clearCheckoutFieldError(
+        {
+          phone: 'Укажите телефон',
+          email: 'Укажите email',
+        },
+        'phone'
+      )
+    ).toEqual({ email: 'Укажите email' })
+  })
+})
 
 describe('validateCheckoutValues', () => {
   it('requires phone and courier address fields for courier delivery', () => {

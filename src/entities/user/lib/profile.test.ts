@@ -1,6 +1,7 @@
 import {
   buildProfileUpdatePayload,
   getProfileDisplayName,
+  hasDuplicateProfileEmail,
   validateProfileFormValues,
 } from './profile'
 
@@ -47,5 +48,19 @@ describe('profile helpers', () => {
       notifyByEmail: true,
       language: 'ru',
     })
+  })
+
+  it('detects an email used by another profile but allows the current email', () => {
+    const users = [
+      { id: 'user-1', email: 'ivan@example.com' },
+      { id: 'user-2', email: 'anna@example.com' },
+    ]
+
+    expect(hasDuplicateProfileEmail(users, 'user-1', 'ANNA@example.com')).toBe(
+      true
+    )
+    expect(hasDuplicateProfileEmail(users, 'user-1', 'ivan@example.com')).toBe(
+      false
+    )
   })
 })

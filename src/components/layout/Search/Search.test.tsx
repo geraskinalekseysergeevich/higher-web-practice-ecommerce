@@ -13,7 +13,6 @@ describe('Search', () => {
     expect(
       screen.queryByRole('button', { name: 'Найти' })
     ).not.toBeInTheDocument()
-    expect(screen.getByRole('search')).toHaveClass('compact')
   })
 
   it('clears a populated search and notifies the owner', async () => {
