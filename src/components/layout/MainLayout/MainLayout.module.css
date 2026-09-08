@@ -9,3 +9,9 @@
   flex: 1;
   min-width: 0;
 }
+
+@media (max-width: 40rem) {
+  .main {
+    padding-bottom: 3.625rem;
+  }
+}

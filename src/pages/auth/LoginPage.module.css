@@ -15,13 +15,6 @@
   line-height: var(--line-height-2xl);
 }
 
-.backIcon {
-  display: none;
-  flex: 0 0 auto;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
 .card form {
   display: grid;
   gap: var(--space-6);
@@ -152,17 +145,13 @@
     gap: 0;
     width: 100%;
     padding: 0;
-    border-radius: var(--radius-xl);
+    border-radius: 0;
     background: transparent;
-    box-shadow: 0 0.5rem 0.5rem 0 var(--color-bg-shadows);
+    box-shadow: none;
   }
 
   .card .titleRow {
     align-items: center;
-  }
-
-  .backIcon {
-    display: block;
   }
 
   .card form {

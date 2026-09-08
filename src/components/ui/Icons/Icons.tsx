@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import ArrowIconSvg from '../../../assets/Arrow.svg?react'
 import CameraIconSvg from '../../../assets/Camera.svg?react'
 import DropdownIconSvg from '../../../assets/Dropdown.svg?react'
+import FilterIconSvg from '../../../assets/Filter.svg?react'
 import SearchIconSvg from '../../../assets/Search.svg?react'
 import ShoppingBagIconSvg from '../../../assets/Shopping_bag.svg?react'
 import StarIconSvg from '../../../assets/Star.svg?react'
@@ -89,6 +90,10 @@ export const ArrowIcon = ({ className, flipped = false }: ArrowIconProps) => (
 
 export const DropdownIcon = ({ className }: IconProps) => (
   <DropdownIconSvg aria-hidden="true" focusable="false" className={className} />
+)
+
+export const FilterIcon = ({ className }: IconProps) => (
+  <FilterIconSvg aria-hidden="true" focusable="false" className={className} />
 )
 
 export const StarIcon = ({ className }: IconProps) => (

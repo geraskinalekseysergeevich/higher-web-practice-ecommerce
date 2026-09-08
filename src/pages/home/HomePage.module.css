@@ -87,6 +87,23 @@
   display: none;
 }
 
+.filterButton {
+  display: inline-grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.filterButton svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .categoryPage :global([data-testid='home-catalog-grid']) {
   gap: 1.25rem;
 }
@@ -115,12 +132,34 @@
     gap: 0;
   }
 
+  .categoryPage .mobileSearch {
+    display: none;
+  }
+
+  .categoryPage .mobileCategoryHeader {
+    padding-top: var(--space-12);
+  }
+
+  .categoryPage .content {
+    padding-top: var(--space-11);
+  }
+
+  .categoryPage .filters {
+    display: none;
+  }
+
+  .mobilePanelOpen {
+    display: none;
+  }
+
   .categoryPage .mobileCategoryHeader {
     display: grid;
     gap: 0.25rem;
     height: 2.75rem;
-    margin-top: 0.75rem;
+    margin-top: 0;
     margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
   }
 
   .breadcrumb {

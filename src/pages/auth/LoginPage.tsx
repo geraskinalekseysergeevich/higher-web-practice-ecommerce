@@ -8,7 +8,6 @@ import {
 } from '../../app/auth/authSlice'
 import { useAppDispatch } from '../../app/hooks'
 import {
-  ArrowIcon,
   Button,
   Form,
   FormField,
@@ -20,6 +19,7 @@ import {
   normalizeEmail,
   validateLoginPayload,
 } from '../../entities/user/lib/auth'
+import { AuthBackButton } from './components/AuthBackButton'
 import styles from './LoginPage.module.css'
 
 type LoginValues = {
@@ -44,6 +44,15 @@ export const LoginPage = () => {
   >({})
   const [serverError, setServerError] = useState('')
   const [recoveryMessage, setRecoveryMessage] = useState('')
+
+  const handleBack = () => {
+    if (location.key === 'default') {
+      navigate('/')
+      return
+    }
+
+    navigate(-1)
+  }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -106,7 +115,7 @@ export const LoginPage = () => {
     <Form
       className={styles.card}
       title="Вход в аккаунт"
-      titleAdornment={<ArrowIcon className={styles.backIcon} />}
+      titleAdornment={<AuthBackButton onClick={handleBack} />}
       onSubmit={handleSubmit}
       noValidate
       footer={

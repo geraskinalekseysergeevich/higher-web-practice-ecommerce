@@ -15,6 +15,7 @@ export {
   CameraIcon,
   CartIcon,
   DropdownIcon,
+  FilterIcon,
   HomeIcon,
   ListIcon,
   SearchIcon,

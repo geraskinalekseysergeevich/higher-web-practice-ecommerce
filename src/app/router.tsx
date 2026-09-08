@@ -1,6 +1,5 @@
 import {
   createBrowserRouter,
-  Navigate,
   type RouteObject,
   RouterProvider,
 } from 'react-router-dom'
@@ -28,9 +27,14 @@ const routes: RouteObject[] = [
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'categories', element: <Navigate to="/" replace /> },
+      { path: 'categories', element: <CategoryProductPage /> },
+      { path: 'categories/:category', element: <CategoryProductPage /> },
       {
         path: 'categories/:category/:subcategory',
+        element: <CategoryProductPage />,
+      },
+      {
+        path: 'categories/:category/:subcategory/:productSubcategory',
         element: <CategoryProductPage />,
       },
       { path: 'product/:productId', element: <ProductPage /> },

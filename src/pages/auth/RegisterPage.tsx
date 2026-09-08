@@ -1,9 +1,8 @@
 import { type ChangeEvent, type FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { useCreateUserMutation, useGetUsersQuery } from '../../app/api/usersApi'
 import {
-  ArrowIcon,
   Button,
   Form,
   FormField,
@@ -14,6 +13,7 @@ import {
   registerUser,
   validateRegisterPayload,
 } from '../../entities/user/lib/auth'
+import { AuthBackButton } from './components/AuthBackButton'
 import styles from './RegisterPage.module.css'
 
 type RegisterValues = {
@@ -33,6 +33,7 @@ const initialValues: RegisterValues = {
 }
 
 export const RegisterPage = () => {
+  const location = useLocation()
   const navigate = useNavigate()
   const { data: users = [], isError, isLoading, refetch } = useGetUsersQuery()
   const [createUser, { isLoading: isSaving }] = useCreateUserMutation()
@@ -41,6 +42,15 @@ export const RegisterPage = () => {
     Partial<Record<keyof RegisterValues, string>>
   >({})
   const [serverError, setServerError] = useState('')
+
+  const handleBack = () => {
+    if (location.key === 'default') {
+      navigate('/')
+      return
+    }
+
+    navigate(-1)
+  }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -93,7 +103,7 @@ export const RegisterPage = () => {
     <Form
       className={styles.card}
       title="Регистрация"
-      titleAdornment={<ArrowIcon className={styles.backIcon} />}
+      titleAdornment={<AuthBackButton onClick={handleBack} />}
       onSubmit={handleSubmit}
       noValidate
       footer={

@@ -4,23 +4,22 @@ import { useSearchParams } from 'react-router-dom'
 
 import { useGetAllProductsQuery } from '../../app/api/productsApi'
 import { Search } from '../../components/layout/Search/Search'
+import { FilterIcon } from '../../components/ui'
 import { getProductFacetOptions } from '../../entities/product/lib/getProductFacetOptions'
 import type { ProductSort } from '../../types'
+import { MobileFilters } from '../category/components/MobileFilters'
 import { HomeCatalog } from './components/HomeCatalog/HomeCatalog'
 import { HomeSidebar } from './components/HomeSidebar/HomeSidebar'
 import { HomeTopBar } from './components/HomeTopBar/HomeTopBar'
 import styles from './HomePage.module.css'
 import { getVisibleHomeProducts } from './lib/homeProducts'
+import { clearSearchQuery } from './lib/homeSearch'
+import { parsePriceParam } from './lib/parsePriceParam'
 
 type HomePageProps = {
   category?: string
   subcategory?: string
   categoryView?: boolean
-}
-
-const parsePriceParam = (value: string) => {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
 }
 
 export const HomePage = ({
@@ -62,6 +61,12 @@ export const HomePage = ({
       ? sortParam
       : 'newest'
   const view = viewParam === 'list' ? 'list' : 'table'
+  const mobilePanelParam = searchParams.get('mobilePanel')
+  const mobilePanel =
+    categoryView &&
+    (mobilePanelParam === 'filters' || mobilePanelParam === 'style')
+      ? mobilePanelParam
+      : undefined
 
   const visibleProducts = useMemo(
     () =>
@@ -184,6 +189,24 @@ export const HomePage = ({
     })
   }
 
+  const clearSearch = () => {
+    setSearchParams(clearSearchQuery(searchParams))
+  }
+
+  const closeMobilePanel = () => {
+    updateSearchParams((params) => {
+      params.delete('mobilePanel')
+      return params
+    })
+  }
+
+  const setMobilePanel = (panel: 'filters' | 'style') => {
+    updateSearchParams((params) => {
+      params.set('mobilePanel', panel)
+      return params
+    })
+  }
+
   const activeFilters = [
     ...(selectedCategory
       ? [
@@ -271,10 +294,36 @@ export const HomePage = ({
         compact
         key={searchParams.toString()}
         defaultValue={query}
-        onClear={clearFilters}
+        onClear={clearSearch}
         onSubmit={handleSearch}
       />
-      {categoryView ? (
+      {categoryView && mobilePanel ? (
+        <MobileFilters
+          densityOptions={densityOptions}
+          inStockOnly={inStockOnly}
+          maxPrice={maxPrice}
+          minPrice={minPrice}
+          mode={mobilePanel}
+          ratedOnly={ratedOnly}
+          selectedDensity={selectedDensity}
+          selectedStyles={selectedStyles}
+          styleOptions={styleOptions}
+          onApply={closeMobilePanel}
+          onBack={
+            mobilePanel === 'style'
+              ? () => setMobilePanel('filters')
+              : closeMobilePanel
+          }
+          onDensityChange={(density) => setSingleParam('density', density)}
+          onInStockChange={(value) => setBooleanParam('inStock', value)}
+          onMaxPriceChange={(value) => setSingleParam('maxPrice', value)}
+          onMinPriceChange={(value) => setSingleParam('minPrice', value)}
+          onOpenStyle={() => setMobilePanel('style')}
+          onRatedChange={(value) => setBooleanParam('rated', value)}
+          onStyleToggle={toggleStyle}
+        />
+      ) : null}
+      {categoryView && !mobilePanel ? (
         <div className={styles.mobileCategoryHeader}>
           <div className={styles.breadcrumb}>
             <span>Усы</span>
@@ -283,11 +332,20 @@ export const HomePage = ({
           </div>
           <div className={styles.categoryTitle}>
             <h1>{selectedSubcategory}</h1>
-            <span aria-hidden="true">⌄</span>
+            <button
+              className={styles.filterButton}
+              type="button"
+              aria-label="Открыть фильтры"
+              onClick={() => setMobilePanel('filters')}
+            >
+              <FilterIcon />
+            </button>
           </div>
         </div>
       ) : null}
-      <div className={styles.layout}>
+      <div
+        className={clsx(styles.layout, mobilePanel && styles.mobilePanelOpen)}
+      >
         <HomeSidebar
           categories={categories}
           hasActiveFilters={hasActiveFilters}
