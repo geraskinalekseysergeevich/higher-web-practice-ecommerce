@@ -36,17 +36,10 @@ import {
 } from '../../entities/product/lib/getProductRatingSummary'
 import { getProductReviewItems } from '../../entities/product/lib/getProductReviewItems'
 import { getProfileDisplayName } from '../../entities/user/lib/profile'
+import { formatBreadcrumb } from './lib/formatBreadcrumb'
 import styles from './ProductPage.module.css'
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
-
-const formatBreadcrumb = (
-  productCategory?: string,
-  productSubcategory?: string
-) =>
-  ['Товарная группа', productCategory, productSubcategory]
-    .filter(Boolean)
-    .join(' / ')
 
 export const ProductPage = () => {
   const { productId } = useParams()
