@@ -1,0 +1,28 @@
+.root {
+  display: grid;
+  gap: var(--space-3);
+  padding: clamp(1.25rem, 2vw, 2rem);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface-secondary);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.title {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.text {
+  max-width: 60ch;
+  color: var(--color-text-secondary);
+}
+
+.action {
+  justify-self: start;
+}

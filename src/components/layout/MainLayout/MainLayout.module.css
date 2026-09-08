@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  background: var(--color-bg-primary);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 40rem) {
+  .main {
+    padding-bottom: 3.625rem;
+  }
+}

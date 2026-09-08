@@ -1,0 +1,175 @@
+.card {
+  display: grid;
+  gap: 0;
+  width: 23.75rem;
+  height: auto;
+  min-height: 0;
+  margin-top: 0;
+  padding: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-modal);
+}
+
+.card h2 {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+}
+
+.card form {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+
+.card > div:last-child {
+  margin-top: 2.5rem;
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.fields > div {
+  display: grid;
+  gap: var(--space-0-5);
+}
+
+.fields > div > label:first-child {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.fields > div > div {
+  display: grid;
+  gap: var(--space-0-5);
+}
+
+.fields input {
+  width: 100%;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-neutral-disable);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.fields input::placeholder {
+  color: var(--color-neutral-disable);
+}
+
+.serverError {
+  margin-bottom: var(--space-2);
+}
+
+.card form > button {
+  width: 100%;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.footer {
+  display: grid;
+  gap: 0;
+  margin-top: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-align: left;
+}
+
+.footerText {
+  display: block;
+  min-height: 1.625rem;
+}
+
+.footerLink {
+  color: var(--color-accent-secondary);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-sm);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+.footerLink:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+@media (max-width: 40rem) {
+  .card {
+    display: flex;
+    min-height: calc(100vh - 2.5rem);
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .card .titleRow {
+    align-items: center;
+  }
+
+  .card form {
+    display: grid;
+    flex: 1;
+    align-content: center;
+    gap: var(--space-4);
+    min-height: 0;
+    margin-top: var(--space-4);
+  }
+
+  .fields > div > label:first-child {
+    display: none;
+  }
+
+  .fields input {
+    height: 2.25rem;
+    min-height: 2.25rem;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .card form > button {
+    height: 2.25rem;
+    min-height: 2.25rem;
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .footer {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
+  }
+
+  .footerText {
+    min-height: 1.625rem;
+  }
+
+  .footerLink {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-sm);
+    text-transform: lowercase;
+  }
+}

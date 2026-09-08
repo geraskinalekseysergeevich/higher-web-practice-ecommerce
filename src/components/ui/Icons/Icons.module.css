@@ -1,0 +1,11 @@
+.flipped {
+  transform: rotate(180deg);
+}
+
+.filled {
+  fill: currentColor;
+}
+
+.filled path {
+  fill: currentColor;
+}

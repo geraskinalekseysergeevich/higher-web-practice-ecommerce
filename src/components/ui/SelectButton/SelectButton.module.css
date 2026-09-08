@@ -1,0 +1,42 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 2rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.25rem;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.root:hover {
+  border-color: var(--color-border-strong);
+}
+
+.root:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.icon {
+  width: 1rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+.open {
+  transform: rotate(180deg);
+}

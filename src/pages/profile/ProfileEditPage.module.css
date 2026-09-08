@@ -1,0 +1,147 @@
+.page {
+  width: min(100%, 36.25rem);
+  margin-inline: auto;
+}
+
+.pageTitle {
+  display: none;
+}
+
+.loading {
+  color: var(--color-text-secondary);
+}
+
+.card {
+  display: grid;
+  gap: 0;
+  padding: 1.5rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-surface-secondary);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  min-height: 5rem;
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.field {
+  min-width: 0;
+  gap: 0;
+}
+
+.field > label:first-child {
+  min-height: 1.25rem;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.field input {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--color-surface-muted);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.field:nth-child(3) {
+  grid-column: 1 / 2;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  width: 17.5625rem;
+}
+
+.actions button {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  white-space: nowrap;
+}
+
+.actions button:last-child {
+  flex: 1;
+}
+
+.cancel {
+  min-width: 6.25rem;
+}
+
+@media (max-width: 40rem) {
+  .pageTitle {
+    display: block;
+    margin: 0 0 1rem;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-heading);
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .card {
+    gap: 0;
+    padding: 1.5rem 1rem;
+  }
+
+  .hero {
+    justify-content: center;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .field:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .field > label:first-child {
+    min-height: 1rem;
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
+  }
+
+  .field input {
+    height: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .actions {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .form {
+    gap: 2.5rem;
+  }
+
+  .actions button,
+  .cancel {
+    width: 100%;
+    height: 2.25rem;
+    min-height: 2.25rem;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+}

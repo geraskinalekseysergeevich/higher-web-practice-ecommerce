@@ -1,0 +1,85 @@
+.page {
+  display: grid;
+  grid-template-columns: 17.5rem 36.25rem;
+  gap: 1.25rem;
+  align-items: start;
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 4rem);
+  padding: 2.5rem max(1.25rem, calc((100vw - 73.75rem) / 2));
+  overflow: hidden;
+  background: var(--color-bg-primary);
+}
+
+.sidebar {
+  width: 17.5rem;
+  min-height: 41rem;
+  padding-right: 1rem;
+  border-right: 1px solid var(--color-bg-shadows);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 36.25rem;
+  min-width: 0;
+}
+
+.cartPage {
+  grid-template-columns: 17.5rem 55rem;
+}
+
+.cartPage .content {
+  width: 55rem;
+}
+
+.page::after {
+  position: absolute;
+  top: 6.125rem;
+  left: calc(50% + 47px);
+  width: 35.875rem;
+  height: 35.875rem;
+  background: url('../../assets/meditation.png') center / contain no-repeat;
+  content: '';
+  pointer-events: none;
+}
+
+.cartPage::after {
+  top: 18rem;
+  left: calc(50% + 18rem);
+  width: 18rem;
+  height: 25rem;
+  background-image: url('../../assets/cart-illustration.svg');
+}
+
+.ordersPage::after {
+  display: none;
+}
+
+@media (max-width: 64rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 1.25rem;
+  }
+
+  .sidebar,
+  .page::after {
+    display: none;
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .cartPage .content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 40rem) {
+  .page {
+    display: block;
+    min-height: auto;
+    padding: 1.25rem 1.25rem 0;
+  }
+}

@@ -1,31 +1,31 @@
 export type Order = {
-  id: string;
-  number: string;
-  userId: string;
-  status: OrderStatus;
-  items: OrderItem[];
-  totalPrice: number;
+  id: string
+  number: string
+  userId: string
+  status: OrderStatus
+  items: OrderItem[]
+  totalPrice: number
 
-  paymentMethod: PaymentMethod;
-  deliveryMethod: DeliveryMethod;
+  paymentMethod: PaymentMethod
+  deliveryMethod: DeliveryMethod
 
-  deliveryAddress?: Address;
-  pickupPointId?: string;
+  deliveryAddress?: Address
+  pickupPointId?: string
 
-  customer: OrderCustomerInfo;
+  customer: OrderCustomerInfo
 
-  comment?: string;
+  comment?: string
 
-  createdAt: string;
-};
+  createdAt: string
+}
 
 export type OrderItem = {
-  productId: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-};
+  productId: string
+  name: string
+  image: string
+  price: number
+  quantity: number
+}
 
 export type OrderStatus =
   | 'pending'
@@ -33,41 +33,41 @@ export type OrderStatus =
   | 'processing'
   | 'shipped'
   | 'delivered'
-  | 'cancelled';
+  | 'cancelled'
 
-export type PaymentMethod = 'card_online' | 'card_on_delivery' | 'cash';
+export type PaymentMethod = 'card_online' | 'card_on_delivery' | 'cash'
 
-export type DeliveryMethod = 'courier' | 'pickup_point';
+export type DeliveryMethod = 'courier' | 'pickup_point'
 
 export type Address = {
-  country: string;
-  city: string;
-  street: string;
-  house: string;
-  apartment?: string;
-  postalCode?: string;
-};
+  country: string
+  city: string
+  street: string
+  house: string
+  apartment?: string
+  postalCode?: string
+}
 
 export type PickupPoint = {
-  id: string;
-  name: string;
-  address: string;
-};
+  id: string
+  name: string
+  address: string
+}
 
 export type OrderCustomerInfo = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-};
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+}
 
 export type CreateOrderPayload = {
-  phone: string;
-  comment?: string;
+  phone: string
+  comment?: string
 
-  paymentMethod: PaymentMethod;
-  deliveryMethod: DeliveryMethod;
+  paymentMethod: PaymentMethod
+  deliveryMethod: DeliveryMethod
 
-  deliveryAddress?: Address;
-  pickupPointId?: string;
-};
+  deliveryAddress?: Address
+  pickupPointId?: string
+}

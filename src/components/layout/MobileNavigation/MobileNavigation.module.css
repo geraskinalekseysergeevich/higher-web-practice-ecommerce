@@ -1,0 +1,71 @@
+.root {
+  display: none;
+}
+
+.item {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 2.75rem;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 0.1875rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  text-decoration: none;
+}
+
+.item:hover,
+.active {
+  color: var(--color-accent-secondary);
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.register {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 2.25rem;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-sm);
+  text-decoration: none;
+}
+
+.guest {
+  gap: var(--space-5);
+}
+
+.guest .item {
+  flex: 0 0 2.25rem;
+}
+
+@media (max-width: 40rem) {
+  .root {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 3.625rem;
+    padding: var(--space-2) var(--space-5);
+    border-top: 1px solid var(--color-bg-shadows);
+    background: var(--color-surface-secondary);
+  }
+}

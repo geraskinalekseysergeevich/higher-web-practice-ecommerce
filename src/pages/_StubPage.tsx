@@ -1,12 +1,21 @@
-type StubPageProps = {
-  title?: string;
-};
+import styles from './_StubPage.module.css'
 
-export function StubPage({ title = 'Страница' }: StubPageProps) {
+type StubPageProps = {
+  title?: string
+  description?: string
+}
+
+export function StubPage({
+  title = 'Страница',
+  description = 'Страница в разработке.',
+}: StubPageProps) {
   return (
-    <main>
-      <h1>{title}</h1>
-      <p>Страница в разработке.</p>
-    </main>
-  );
+    <section className={styles.container} aria-labelledby="page-stub-title">
+      <div className={styles.label}>Пока что заглушка</div>
+      <h1 id="page-stub-title" className={styles.title}>
+        {title}
+      </h1>
+      <p className={styles.text}>{description}</p>
+    </section>
+  )
 }

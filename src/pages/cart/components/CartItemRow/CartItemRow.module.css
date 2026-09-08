@@ -1,0 +1,224 @@
+.root {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 1.25rem 0;
+}
+
+.image {
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: contain;
+}
+
+.info {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.name {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+.name a {
+  color: var(--color-link);
+  font-weight: var(--font-weight-regular);
+  text-decoration: none;
+}
+
+.price {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  display: none;
+}
+
+.unavailable {
+  margin: 0;
+  color: var(--color-accent-danger);
+  font-size: var(--font-size-sm);
+}
+
+.removeButton {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.removeButton svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.quantity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.quantityButton {
+  width: 2rem;
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+
+.quantityValue {
+  min-width: 1.5rem;
+  text-align: center;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.total {
+  min-width: 6rem;
+  justify-self: end;
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.delivery {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .root {
+    grid-template-columns: 3.75rem minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: var(--space-2);
+    padding: var(--space-2) 0 1rem;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .image {
+    width: 3.75rem;
+    height: 3.5rem;
+  }
+
+  .info {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .quantity {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .total {
+    grid-column: 3;
+    grid-row: 1;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .removeButton {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 40rem) {
+  .root {
+    grid-template-rows: 3.75rem auto;
+    row-gap: var(--space-3);
+    padding: 0 0 var(--space-3);
+  }
+
+  .image {
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .info {
+    align-self: start;
+    min-width: 0;
+  }
+
+  .name {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .quantity {
+    grid-row: 1;
+    align-self: end;
+    gap: 0.375rem;
+  }
+
+  .quantityButton {
+    width: 1.5rem;
+    height: 1.5rem;
+    min-height: 1.5rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-xs);
+  }
+
+  .quantityValue {
+    display: grid;
+    width: 1.5rem;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-lg);
+  }
+
+  .total {
+    align-self: start;
+    min-width: 0;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .removeButton {
+    grid-row: 1;
+    align-self: end;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .removeButton svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .delivery {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    gap: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+  }
+
+  .delivery span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
+  }
+}

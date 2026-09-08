@@ -1,0 +1,56 @@
+.root {
+  min-height: 100vh;
+  background: var(--color-bg-primary);
+}
+
+.main {
+  position: relative;
+  min-height: calc(100vh - 4rem);
+  overflow: auto;
+}
+
+.illustration {
+  position: absolute;
+  top: 0.8125rem;
+  left: calc(50% - 26.25rem);
+  width: 62.5rem;
+  height: auto;
+  margin: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.outlet {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-height: inherit;
+  padding: 2rem;
+}
+
+@media (max-width: 64rem) {
+  .main {
+    min-height: calc(100vh - 4rem);
+  }
+
+  .illustration {
+    object-position: center 28%;
+  }
+}
+
+@media (max-width: 40rem) {
+  .main {
+    min-height: 100vh;
+  }
+
+  .outlet {
+    place-items: stretch;
+    min-height: 100%;
+    padding: var(--space-5);
+  }
+
+  .illustration {
+    display: none;
+  }
+}
