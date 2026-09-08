@@ -28,9 +28,10 @@ export const getProductFacetOptions = (
   products: Product[]
 ): ProductFacetOptions => ({
   categories: getUniqueCharacteristicValues(products, 'категория'),
-  subcategoriesByCategory: getUniqueCharacteristicValues(products, 'категория').reduce<
-    Record<string, string[]>
-  >((accumulator, category) => {
+  subcategoriesByCategory: getUniqueCharacteristicValues(
+    products,
+    'категория'
+  ).reduce<Record<string, string[]>>((accumulator, category) => {
     const subcategories = products
       .filter((product) => product.characteristics['категория'] === category)
       .flatMap((product) => {
