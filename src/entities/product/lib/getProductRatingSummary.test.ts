@@ -1,6 +1,7 @@
 import type { Order, ProductRating } from '../../../types'
 import {
   canUserRateProduct,
+  canUserSubmitRating,
   getProductRatingSummary,
   getUserProductRating,
 } from './getProductRatingSummary'
@@ -69,4 +70,37 @@ describe('canUserRateProduct', () => {
 
 it('finds the existing rating to update instead of creating a duplicate', () => {
   expect(getUserProductRating(ratings, 'user-2', productId)).toEqual(ratings[0])
+})
+
+describe('canUserSubmitRating', () => {
+  const deliveredOrder = [
+    {
+      userId,
+      status: 'delivered',
+      items: [{ productId, quantity: 1 }],
+    },
+  ] as Order[]
+
+  it('allows the first rating after delivery', () => {
+    expect(
+      canUserSubmitRating(deliveredOrder, ratings, userId, productId)
+    ).toBe(true)
+  })
+
+  it('hides rating submission after the user has already rated the product', () => {
+    const userRatings = [
+      ...ratings,
+      {
+        productId,
+        userId,
+        userName: 'Алексей',
+        rating: 5,
+        createdAt: '2026-03-03T10:00:00Z',
+      },
+    ]
+
+    expect(
+      canUserSubmitRating(deliveredOrder, userRatings, userId, productId)
+    ).toBe(false)
+  })
 })

@@ -41,3 +41,12 @@ export const getUserProductRating = (
   ratings.find(
     (rating) => rating.userId === userId && rating.productId === productId
   )
+
+export const canUserSubmitRating = (
+  orders: Pick<Order, 'userId' | 'status' | 'items'>[],
+  ratings: ProductRating[],
+  userId: string,
+  productId: string
+) =>
+  canUserRateProduct(orders, userId, productId) &&
+  !getUserProductRating(ratings, userId, productId)

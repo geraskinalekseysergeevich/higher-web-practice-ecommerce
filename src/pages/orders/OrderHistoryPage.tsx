@@ -17,6 +17,7 @@ import {
   getOrderStatusLabel,
   getPaymentMethodLabel,
 } from '../../entities/order/lib/orderDisplay'
+import { sortOrdersByCreatedAt } from '../../entities/order/lib/sortOrdersByCreatedAt'
 import styles from './OrderHistoryPage.module.css'
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
@@ -33,8 +34,8 @@ export const OrderHistoryPage = () => {
     isLoading,
     refetch,
   } = useGetOrdersByUserIdQuery(authenticatedUser?.id ?? skipToken)
-  const visibleOrders = orders.filter(
-    (order) => order.userId === authenticatedUser?.id
+  const visibleOrders = sortOrdersByCreatedAt(
+    orders.filter((order) => order.userId === authenticatedUser?.id)
   )
 
   if (isLoading) {
