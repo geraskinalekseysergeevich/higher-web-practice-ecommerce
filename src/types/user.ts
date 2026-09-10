@@ -43,6 +43,7 @@ export type UpdateProfilePayload = {
   firstName?: string
   lastName?: string
   email?: string
+  password?: string
   notifyByEmail?: boolean
   language?: LanguageCode
 }

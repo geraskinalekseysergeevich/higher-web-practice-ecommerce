@@ -21,6 +21,7 @@ describe('profile helpers', () => {
         firstName: '',
         lastName: '',
         email: '',
+        password: '',
         notifyByEmail: false,
         language: '',
       })
@@ -32,12 +33,26 @@ describe('profile helpers', () => {
     })
   })
 
+  it('rejects a short new password', () => {
+    expect(
+      validateProfileFormValues({
+        firstName: 'Иван',
+        lastName: 'Петров',
+        email: 'ivan@example.com',
+        password: '123',
+        notifyByEmail: false,
+        language: 'ru',
+      })
+    ).toEqual({ password: 'Пароль должен быть не короче 6 символов' })
+  })
+
   it('builds update payload from values', () => {
     expect(
       buildProfileUpdatePayload({
         firstName: '  Иван ',
         lastName: ' Петров ',
         email: ' ivan@example.com ',
+        password: ' new-password ',
         notifyByEmail: true,
         language: 'ru',
       })
@@ -45,6 +60,7 @@ describe('profile helpers', () => {
       firstName: 'Иван',
       lastName: 'Петров',
       email: 'ivan@example.com',
+      password: 'new-password',
       notifyByEmail: true,
       language: 'ru',
     })

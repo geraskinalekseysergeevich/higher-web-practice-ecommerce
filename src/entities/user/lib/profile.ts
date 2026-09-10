@@ -5,6 +5,7 @@ export type ProfileFormValues = {
   firstName: string
   lastName: string
   email: string
+  password: string
   notifyByEmail: boolean
   language: string
 }
@@ -39,6 +40,10 @@ export const validateProfileFormValues = (
     errors.email = 'Введите корректный email'
   }
 
+  if (values.password.trim() && values.password.trim().length < 6) {
+    errors.password = 'Пароль должен быть не короче 6 символов'
+  }
+
   if (!values.language.trim()) {
     errors.language = 'Выберите язык'
   }
@@ -52,6 +57,7 @@ export const buildProfileUpdatePayload = (
   firstName: values.firstName.trim(),
   lastName: values.lastName.trim(),
   email: values.email.trim(),
+  ...(values.password.trim() ? { password: values.password.trim() } : {}),
   notifyByEmail: values.notifyByEmail,
   language: values.language.trim() as User['language'],
 })
