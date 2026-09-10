@@ -10,12 +10,7 @@ export type {
   PaymentMethod,
   PickupPoint,
 } from './order'
-export type {
-  Product,
-  ProductListResponse,
-  ProductRating,
-  ProductSort,
-} from './product'
+export type { Product, ProductRating, ProductSort } from './product'
 export type {
   LanguageCode,
   LoginPayload,

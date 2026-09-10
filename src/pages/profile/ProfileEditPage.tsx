@@ -20,6 +20,7 @@ import {
   Input,
   ServerError,
 } from '../../components/ui'
+import type { ProfileFormValues } from '../../entities/user/lib/profile'
 import {
   buildProfileUpdatePayload,
   hasDuplicateProfileEmail,
@@ -28,13 +29,7 @@ import {
 import { ProfileAvatar } from './components/ProfileAvatar'
 import styles from './ProfileEditPage.module.css'
 
-type ProfileValues = {
-  firstName: string
-  lastName: string
-  email: string
-  notifyByEmail: boolean
-  language: string
-}
+type ProfileValues = ProfileFormValues
 
 const createInitialValues = (user?: {
   firstName: string
@@ -46,6 +41,7 @@ const createInitialValues = (user?: {
   firstName: user?.firstName ?? '',
   lastName: user?.lastName ?? '',
   email: user?.email ?? '',
+  password: '',
   notifyByEmail: user?.notifyByEmail ?? false,
   language: user?.language ?? 'ru',
 })
@@ -230,6 +226,24 @@ export const ProfileEditPage = () => {
                 required
                 onChange={handleChange}
                 value={values.email}
+              />
+            </FormField>
+
+            <FormField
+              className={styles.field}
+              id="profile-password"
+              label="Новый пароль"
+              error={fieldErrors.password}
+            >
+              <Input
+                autoComplete="new-password"
+                name="password"
+                id="profile-password"
+                error={fieldErrors.password}
+                onChange={handleChange}
+                placeholder="Оставьте пустым, если не меняете"
+                type="password"
+                value={values.password}
               />
             </FormField>
 

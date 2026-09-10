@@ -1,3 +1,6 @@
+import type { BaseQueryApi } from '@reduxjs/toolkit/query'
+
+import { getProductRatingSummary } from '../../entities/product/lib/getProductRatingSummary'
 import type { ProductRating } from '../../types'
 import { emptySplitApi } from './baseApi'
 import { apiResources, createItemTag, createListTag } from './common/tags'
@@ -8,6 +11,7 @@ import type {
   UpdateRatingBody,
 } from './common/types'
 import { parseRatingResponse, parseRatings } from './common/validation'
+import { productsApi } from './productsApi'
 
 const RATINGS_URL = apiResources.ratings
 
@@ -43,6 +47,25 @@ const getRatingsByProductIdEndpoint = (builder: ApiBuilder) =>
     ],
   })
 
+const synchronizeProductRatingSummary = async (
+  productId: string,
+  dispatch: BaseQueryApi['dispatch']
+) => {
+  const ratings = await dispatch(
+    ratingsApi.endpoints.getRatingsByProductId.initiate(productId, {
+      forceRefetch: true,
+      subscribe: false,
+    })
+  ).unwrap()
+
+  await dispatch(
+    productsApi.endpoints.updateProductRatingSummary.initiate({
+      productId,
+      ...getProductRatingSummary(ratings),
+    })
+  ).unwrap()
+}
+
 const createRatingEndpoint = (builder: ApiBuilder) =>
   builder.mutation<ProductRating, RatingBody>({
     query: ({ createdAt, ...body }) => ({
@@ -54,6 +77,14 @@ const createRatingEndpoint = (builder: ApiBuilder) =>
       },
     }),
     transformResponse: parseRatingResponse,
+    onQueryStarted: async ({ productId }, { dispatch, queryFulfilled }) => {
+      try {
+        await queryFulfilled
+        await synchronizeProductRatingSummary(productId, dispatch)
+      } catch {
+        return
+      }
+    },
     invalidatesTags: (_result, _error, body) => [
       createItemTag(apiResources.ratings, body.productId),
       createListTag(apiResources.ratings),
@@ -68,7 +99,20 @@ const updateRatingEndpoint = (builder: ApiBuilder) =>
       body: { rating },
     }),
     transformResponse: parseRatingResponse,
-    invalidatesTags: [createListTag(apiResources.ratings)],
+    onQueryStarted: async (_body, { dispatch, queryFulfilled }) => {
+      try {
+        const { data: rating } = await queryFulfilled
+        await synchronizeProductRatingSummary(rating.productId, dispatch)
+      } catch {
+        return
+      }
+    },
+    invalidatesTags: (result) => [
+      createListTag(apiResources.ratings),
+      ...(result
+        ? [createItemTag(apiResources.ratings, result.productId)]
+        : []),
+    ],
   })
 
 const ratingsApi = emptySplitApi.injectEndpoints({

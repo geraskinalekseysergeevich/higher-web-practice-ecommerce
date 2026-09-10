@@ -2,7 +2,6 @@ import type {
   AddToCartPayload,
   Order,
   ProductRating,
-  ProductSort,
   RegisterPayload,
   UpdateProfilePayload,
 } from '../../../types'
@@ -21,12 +20,6 @@ export type ApiBuilder = Parameters<
 >[0]['endpoints'] extends (builder: infer Builder) => unknown
   ? Builder
   : never
-
-export type ProductsQueryArgs = {
-  page?: number
-  pageSize?: number
-  sort?: ProductSort
-}
 
 export type OrdersQueryArgs = {
   userId?: string
@@ -52,6 +45,12 @@ export type RatingBody = Omit<ProductRating, 'createdAt'> & {
 export type UpdateRatingBody = {
   id: string
   rating: number
+}
+
+export type UpdateProductRatingSummaryBody = {
+  productId: string
+  rating: number
+  ratingCount: number
 }
 
 export type CartBody = AddToCartPayload

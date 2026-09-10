@@ -55,7 +55,7 @@ export const buildOrderFromCheckout = ({
     id: orderId,
     number: orderNumber,
     userId: user.id,
-    status: paymentMethod === 'card_online' ? 'paid' : 'pending',
+    status: 'delivered',
     items,
     totalPrice: items.reduce(
       (sum, item) => sum + item.price * item.quantity,

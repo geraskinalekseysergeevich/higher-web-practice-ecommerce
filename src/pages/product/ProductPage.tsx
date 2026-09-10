@@ -30,13 +30,14 @@ import {
 } from '../../components/ui'
 import { getProductCharacteristicEntries } from '../../entities/product/lib/getProductCharacteristicEntries'
 import {
-  canUserRateProduct,
+  canUserSubmitRating,
   getProductRatingSummary,
   getUserProductRating,
 } from '../../entities/product/lib/getProductRatingSummary'
 import { getProductReviewItems } from '../../entities/product/lib/getProductReviewItems'
 import { getProfileDisplayName } from '../../entities/user/lib/profile'
 import { formatBreadcrumb } from './lib/formatBreadcrumb'
+import { getRatingHint } from './lib/getRatingHint'
 import styles from './ProductPage.module.css'
 
 const priceFormatter = new Intl.NumberFormat('ru-RU')
@@ -133,13 +134,13 @@ export const ProductPage = () => {
   const cartItem = cartItems.find((item) => item.productId === product.id)
   const isCartMutationPending =
     isAddingToCart || isUpdatingCart || isRemovingCart
-  const canRate = Boolean(
-    authenticatedUser &&
-    canUserRateProduct(orders, authenticatedUser.id, product.id)
-  )
   const existingRating = authenticatedUser
     ? getUserProductRating(ratings, authenticatedUser.id, product.id)
     : undefined
+  const canRate = Boolean(
+    authenticatedUser &&
+    canUserSubmitRating(orders, ratings, authenticatedUser.id, product.id)
+  )
   const handlePreviousImage = () => {
     if (!hasImages) {
       return
@@ -218,25 +219,26 @@ export const ProductPage = () => {
     }
   }
 
-  const handleCreateRating = async () => {
-    if (!authenticatedUser || !canRate || selectedRating === null) {
+  const handleCreateRating = async (rating: number) => {
+    if (!authenticatedUser || !canRate) {
       return
     }
 
+    setSelectedRating(rating)
     setRatingError('')
 
     try {
       if (existingRating?.id) {
         await updateRating({
           id: existingRating.id,
-          rating: selectedRating,
+          rating,
         }).unwrap()
       } else {
         await createRating({
           productId: product.id,
           userId: authenticatedUser.id,
           userName: getProfileDisplayName(authenticatedUser),
-          rating: selectedRating,
+          rating,
         }).unwrap()
       }
       setSelectedRating(null)
@@ -459,7 +461,8 @@ export const ProductPage = () => {
                   type="button"
                   aria-label={`Оценка ${index + 1}`}
                   aria-pressed={selectedRating === index + 1}
-                  onClick={() => setSelectedRating(index + 1)}
+                  disabled={isCreatingRating || isUpdatingRating}
+                  onClick={() => void handleCreateRating(index + 1)}
                 >
                   {selectedRating !== null && selectedRating > index ? (
                     <StarFilledIcon className={styles.reviewStar} />
@@ -469,22 +472,10 @@ export const ProductPage = () => {
                 </button>
               ))}
             </div>
-            <Button
-              size="sm"
-              type="button"
-              disabled={
-                selectedRating === null || isCreatingRating || isUpdatingRating
-              }
-              onClick={() => void handleCreateRating()}
-            >
-              {existingRating ? 'Обновить оценку' : 'Сохранить оценку'}
-            </Button>
           </div>
         ) : (
           <p className={styles.reviewHint}>
-            {authenticatedUser
-              ? 'Оценка доступна после получения заказа.'
-              : 'Войдите, чтобы оценить товар после покупки.'}
+            {getRatingHint(Boolean(authenticatedUser), Boolean(existingRating))}
           </p>
         )}
 

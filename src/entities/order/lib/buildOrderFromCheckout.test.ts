@@ -24,7 +24,7 @@ const lineItems: CartLineItem[] = [
 ]
 
 describe('buildOrderFromCheckout', () => {
-  it('marks the simulated online payment as paid', () => {
+  it('marks a successfully created order as delivered', () => {
     const order = buildOrderFromCheckout({
       user,
       lineItems,
@@ -39,7 +39,7 @@ describe('buildOrderFromCheckout', () => {
       },
     })
 
-    expect(order.status).toBe('paid')
+    expect(order.status).toBe('delivered')
     expect(order.totalPrice).toBe(5590)
   })
 

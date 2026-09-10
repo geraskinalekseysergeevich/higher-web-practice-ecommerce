@@ -11,13 +11,6 @@ export type Product = {
   createdAt: string
 }
 
-export type ProductListResponse = {
-  items: Product[]
-  total: number
-  page: number
-  pageSize: number
-}
-
 export type ProductSort = 'price_asc' | 'price_desc' | 'newest' | 'rating'
 
 export type ProductRating = {
